@@ -12,11 +12,11 @@ for i in range(15):
     for i in range(1,10):
         s.NakedSingleInRow(i)
         s.NakedSingleInCol(i)
-        s.NakedSingleInBlock(i)
+        s.NakedSingleInBox(i)
         
         s.HiddenSingleInRow(i)
         s.HiddenSingleInCol(i)
-        s.HiddenSingleInBlock(i)
+        s.HiddenSingleInBox(i)
 print('       SOLUTION')
 print(s)
 s.AssertCorrect()

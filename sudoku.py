@@ -16,7 +16,7 @@ class Sudoku:
         
         self.known_rows = []
         self.known_cols = []
-        self.known_blocks = []
+        self.known_boxes = []
         
         i = 0
         for line in f:
@@ -66,7 +66,8 @@ class Sudoku:
                 
     def __getitem__(self, key):
         if len(key) != 2:
-            raise "Only 2 index access supported"
+            print("Only 2 index access supported")
+            raise TypeError
         i = key[0] - 1
         j = key[1] - 1
         return self.board[i][j].candidates.copy()
@@ -74,22 +75,22 @@ class Sudoku:
     def __setitem__(self, key, value):
         if len(key) != 2:
             print("Only 2 index access supported")
-            raise TypeError        
+            raise TypeError
         i = key[0]-1
         j = key[1]-1
         if i>8 or j>8:
             raise IndexError
         self.board[key].Resolve(value)
         
-    def GetBlock(self, bid):
+    def GetBox(self, bid):
         rows = [i + 3*((bid-1)//3) for i in range(1,4)]
         cols = [j + 3*((bid-1)%3)  for j in range(1,4)]
         
-        block = []
+        box = []
         for r in rows:
             for c in cols:
-                block.append(self.board[r-1][c-1])
-        return block
+                box.append(self.board[r-1][c-1])
+        return box
         
     #################################
     #                               #
@@ -160,18 +161,18 @@ class Sudoku:
             cell = row[j]
             cell -= knowns
         
-    def NakedSingleInBlock(self, b):
+    def NakedSingleInBox(self, b):
         if b > 9:
             raise IndexError
         
-        if b in self.known_blocks:
+        if b in self.known_boxes:
             return
         
-        B = self.GetBlock(b)        
+        B = self.GetBox(b)        
         
         knowns = [cell.value for cell in B if cell.isKnown]
         if len(knowns) == 9:
-            self.known_blocks.append(b)
+            self.known_boxes.append(b)
             return
                 
         for cell in B:
@@ -227,24 +228,24 @@ class Sudoku:
                 if not cell.isKnown:
                     cell.Resolve(l+1)
         
-    def HiddenSingleInBlock(self, b):
+    def HiddenSingleInBox(self, b):
         if b > 9:
             raise IndexError
         
-        if b in self.known_blocks:
+        if b in self.known_boxes:
             return
         
-        block = self.GetBlock(b)
+        box = self.GetBox(b)
         
         locations = [[] for a in range(9)]
         
         for i in range(9):
-            cell = block[i]
+            cell = box[i]
             for x in cell.candidates:
                 locations[x-1].append(i)
        
         for l in range(9):
             if len(locations[l]) == 1:
-                cell = block[locations[l][0]]
+                cell = box[locations[l][0]]
                 if not cell.isKnown:
                     cell.Resolve(l+1)
