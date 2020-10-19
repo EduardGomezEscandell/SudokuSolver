@@ -9,8 +9,6 @@ for i in range(15):
     if s.IsSolved():
         break
     
-    print(s)
-    
     for i in range(1,10):
         s.NakedSingleInRow(i)
         s.NakedSingleInCol(i)
