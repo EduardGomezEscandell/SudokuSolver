@@ -1,0 +1,8 @@
+# Python cache
+**.pyc
+
+# Sudoku source files
+*.sdk
+
+# Example source file
+!data/1.sdk
