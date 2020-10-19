@@ -1,10 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Oct 19 19:42:16 2020
-
-@author: eduard
-"""
 from cell import Cell
 
 def skip_to_line(f, target):
@@ -76,7 +69,7 @@ class Sudoku:
             raise "Only 2 index access supported"
         i = key[0] - 1
         j = key[1] - 1
-        return self.board[i][j].possibilities.copy()
+        return self.board[i][j].candidates.copy()
         
     def __setitem__(self, key, value):
         if len(key) != 2:
@@ -134,7 +127,7 @@ class Sudoku:
     #                               #
     #################################
     
-    def RemoveDuplicatesRow(self, row):
+    def NakedSingleInRow(self, row):
         if row > 9:
             raise IndexError
         
@@ -150,7 +143,7 @@ class Sudoku:
         for cell in self.board[i]:
             cell -= knowns
     
-    def RemoveDuplicatesCol(self, col):
+    def NakedSingleInCol(self, col):
         if col > 9:
             raise IndexError
         
@@ -167,7 +160,7 @@ class Sudoku:
             cell = row[j]
             cell -= knowns
         
-    def RemoveDuplicatesBlock(self, b):
+    def NakedSingleInBlock(self, b):
         if b > 9:
             raise IndexError
         
@@ -190,7 +183,7 @@ class Sudoku:
     #                               #
     #################################
             
-    def FindMissingRow(self, row):
+    def HiddenSingleInRow(self, row):
         if row > 9:
             raise IndexError
         
@@ -203,7 +196,7 @@ class Sudoku:
         
         for j in range(9):
             cell = self.board[i][j]
-            for x in cell.possibilities:
+            for x in cell.candidates:
                 locations[x-1].append(j)
        
         for l in range(9):
@@ -212,7 +205,7 @@ class Sudoku:
                 if not cell.isKnown:
                     cell.Resolve(l+1)
             
-    def FindMissingCol(self, col):
+    def HiddenSingleInCol(self, col):
         if col > 9:
             raise IndexError
         
@@ -225,7 +218,7 @@ class Sudoku:
         
         for i in range(9):
             cell = self.board[i][j]
-            for x in cell.possibilities:
+            for x in cell.candidates:
                 locations[x-1].append(i)
        
         for l in range(9):
@@ -234,7 +227,7 @@ class Sudoku:
                 if not cell.isKnown:
                     cell.Resolve(l+1)
         
-    def FindMissingBlock(self, b):
+    def HiddenSingleInBlock(self, b):
         if b > 9:
             raise IndexError
         
@@ -247,7 +240,7 @@ class Sudoku:
         
         for i in range(9):
             cell = block[i]
-            for x in cell.possibilities:
+            for x in cell.candidates:
                 locations[x-1].append(i)
        
         for l in range(9):

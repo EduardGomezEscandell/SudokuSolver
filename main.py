@@ -1,14 +1,7 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Oct 19 19:41:45 2020
-
-@author: eduard
-"""
-
 from sudoku import Sudoku
 
 s = Sudoku('data/2')
+print('       GIVENS')
 print(s)
 s.AssertCorrect()
 
@@ -19,13 +12,13 @@ for i in range(15):
     print(s)
     
     for i in range(1,10):
-        s.RemoveDuplicatesRow(i)
-        s.RemoveDuplicatesCol(i)
-        s.RemoveDuplicatesBlock(i)
+        s.NakedSingleInRow(i)
+        s.NakedSingleInCol(i)
+        s.NakedSingleInBlock(i)
         
-        s.FindMissingRow(i)
-        s.FindMissingCol(i)
-        s.FindMissingBlock(i)
-
+        s.HiddenSingleInRow(i)
+        s.HiddenSingleInCol(i)
+        s.HiddenSingleInBlock(i)
+print('       SOLUTION')
 print(s)
 s.AssertCorrect()

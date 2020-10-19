@@ -1,22 +1,13 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Oct 19 20:06:56 2020
-
-@author: eduard
-"""
-
-
 class Cell:
     def __init__(self, value=None):
         if value is None:
             self.isKnown = False
             self.value = 0
-            self.possibilities = [i for i in range(1,10)]
+            self.candidates = [i for i in range(1,10)]
         else:
             self.isKnown = True
             self.value = value
-            self.possibilities = [value]    
+            self.candidates = [value]    
     
     def __str__(self):
         if self.isKnown:
@@ -36,13 +27,13 @@ class Cell:
         else:
             raise TypeError
             
-        if len(self.possibilities) == 1:
-            self.Resolve(self.possibilities[0])
+        if len(self.candidates) == 1:
+            self.Resolve(self.candidates[0])
             return
           
     def RemoveOption(self, value):
         try:
-            self.possibilities.remove(value)
+            self.candidates.remove(value)
             return
         except ValueError:
             return
@@ -50,9 +41,9 @@ class Cell:
     def Resolve(self, value):
         self.isKnown = True
         self.value = value
-        self.possibilities = [value]
+        self.candidates = [value]
         
     def ResetCell(self):
         self.isKnown = False
         self.value = 0
-        self.possibilities = [i for i in range(1,10)]
+        self.candidates = [i for i in range(1,10)]
