@@ -10,8 +10,8 @@ class ReachedMaxIterError(SolveError):
         self.msg = 'Ran out of iterations'
 
 class CannotProgressError(SolveError):
-    def __init__(self):
-        self.msg = 'Cannot advance any further. Try a more robust algorithm.'
+    def __init__(self, step):
+        self.msg = 'Cannot advance any further (step %d). Try a more robust algorithm.'%step
 
 
 class CellLevelError(Exception):

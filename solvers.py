@@ -66,9 +66,16 @@ class SinglesSolver(Solver):
         self.hidden_single_pass()
         
         uncert_old = self.uncertainty
+        
         self.uncertainty = self.sudoku.GetUncertainty()
+        
+        if self.uncertainty == 0:
+            return True
+        
         if self.uncertainty == uncert_old:
-            raise CannotProgressError()
+            raise CannotProgressError(i)
+        
+        return False
 
 class BranchingSolver(Solver):
     def extra_init(self):
