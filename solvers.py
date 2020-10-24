@@ -75,8 +75,6 @@ class BranchingSolver(Solver):
         self.uncertainty = self.sudoku.GetUncertainty()
         if self.debug_lvl > 1 : print(' START - %.2f%% uncertainty\n'%(100*self.uncertainty))
         self.snapshots = []
-        
-        self.logicalsolver = SinglesSolver(self.sudoku, maxiter=5, debug_lvl=0)
     
     def iterate_once(self,i):
         try:

@@ -8,5 +8,5 @@ print(s)
 s.AssertCorrect()
 
 
-solver = solvers.BranchingSolver(s,1000,1)
+solver = solvers.BranchingSolver(s,1000,2)
 solver.Execute()
