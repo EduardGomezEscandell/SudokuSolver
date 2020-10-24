@@ -50,7 +50,8 @@ class Solver:
         
         if self.sudoku.GetUncertainty() > 0:
             raise SolveError('Failed to remove all uncertainty')
-                
+
+    def Verify(self):
         try:
             self.sudoku.AssertCorrect()
             if self.debug_lvl > 0 : print('The grid is correct')

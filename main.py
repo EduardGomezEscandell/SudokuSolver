@@ -17,5 +17,4 @@ except errors.CannotProgressError as e:
     print('Trying the branching algorithm')
     solver = solvers.BranchingSolver(s,1000,1)
     solver.Execute()
-    
-    
+solver.Verify()
