@@ -1,5 +1,4 @@
-from sudoku import Sudoku
-from errors import SolveError, CellLevelError, VerificationError, NoCandidatesError, CannotProgressError, ReachedMaxIterError
+from errors import SolveError, CellLevelError, VerificationError, CannotProgressError, ReachedMaxIterError
 
 class Solver:
     def __init__(self, sudoku, maxiter=1000, debug_lvl=0):
