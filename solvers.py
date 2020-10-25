@@ -9,14 +9,28 @@ class Solver:
         
         self.sudoku = sudoku
         self.child_solvers = []
-        self.extra_init(args, kwargs)
+        self.child_solvers = [] # Used by recursive algorithms
+        if 'Info' in kwargs:
+            self.extra_init(kwargs['Info'])
+        else:
+            self.extra_init()
+        
         # DEBUG_LVL:
         # 0: No prints
         # 1: Only final result
         # 2: Step-by-step info
         # 3: Step-by-step info and partial results
     
-    def extra_init(self,*args, **kwargs):
+    def init_child_solver(self, solvername, solverdata):
+        solvers = {'SinglesSolver':SinglesSolver,
+                   'BranchingSolver':BranchingSolver}
+        if solvername in solvers:
+            child_solver = solvers[solvername]
+            self.child_solvers.append(child_solver(self.sudoku, **solverdata))
+            return self.child_solvers[-1]
+        return None
+    
+    def extra_init(self, **kwargs):
         pass
     
     def print(self, *msg, **kwargs):
@@ -91,11 +105,26 @@ class SinglesSolver(Solver):
         return False
 
 class BranchingSolver(Solver):
+    # HOW TO USE
+    # Call BranchingSolver(sudoku, *args, **kwargs) to use.
+    #
+    # Valid kwargs that are the same as any other solver:
+    # - maxiter is the maximum number of iterations
+    # - debug_lvl dictates the amount of prints performed. (See Solver.__init__)
+    #
+    # Kwargs that are particular of this solver:
+    # - Info is used to determine which solver is used. Branching is performed 
+    #   when that solver throws a CannotProgressError.
+    #   It must be a dictionary with entries such that:
+    #    + The key is the name of the solver
+    #    + The value will be passed passed onto that solver's init as args.
+    #
+    
     # Necessary methods
-    def extra_init(self, *args, **kwargs):
-        self.print(' START - %.2f%% uncertainty\n'%(100*self.sudoku.UpdateUncertainty()), debug_lvl=1)
+    def extra_init(self, info = {'SinglesSolver':{'maxiter':1000,'debug_lvl':0}}):
         self.snapshots = []
-        self.child_solvers.append(SinglesSolver(self.sudoku, 5))
+        for key in info:
+            self.init_child_solver(key, info[key])
     
     def iterate_once(self,i):
         no_uncertainty = False
