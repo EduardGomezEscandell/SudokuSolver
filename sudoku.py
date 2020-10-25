@@ -16,6 +16,8 @@ class Sudoku:
         self.known_rows = []
         self.known_cols = []
         self.known_boxes = []
+        
+        self.boxes = [self.BuildBox(i) for i in range(1,10)]
 
     def load(self, filename, loadsolution='False'):
         filename += '.sdk'        
@@ -95,7 +97,7 @@ class Sudoku:
             raise IndexError
         self.board[i][j].Resolve(value)
         
-    def GetBox(self, bid):
+    def BuildBox(self, bid):
         rows = [i + 3*((bid-1)//3) for i in range(1,4)]
         cols = [j + 3*((bid-1)%3)  for j in range(1,4)]
         
@@ -119,7 +121,7 @@ class Sudoku:
                     if cell.value != self.correct[i][j]:
                         raise VerificationError(cell)
         
-    def GetUncertainty(self):
+    def UpdateUncertainty(self):
         # Of potential placements
         ncandidates = 0
         for row in self.board:
@@ -128,7 +130,8 @@ class Sudoku:
                     ncandidates +=1
                 else:
                     ncandidates += len(cell.candidates)
-        return (ncandidates - 81.0) / 648.0
+        self.cached_uncertainty = (ncandidates - 81.0) / 648.0
+        return self.cached_uncertainty
     
 
     def AssertNoDuplicates(self):
@@ -136,7 +139,7 @@ class Sudoku:
             rowcounter = [0]*9
             colcounter = [0]*9
             boxcounter = [0]*9
-            B = self.GetBox(i)
+            B = self.boxes[i]
             for j in range(9):
                 cellrow = self[(i+1,j+1)]
                 cellcol = self[(j+1,i+1)]
@@ -216,17 +219,15 @@ class Sudoku:
             raise IndexError
         
         if b in self.known_boxes:
-            return
-        
-        B = self.GetBox(b)        
+            return 
         
         knownvalues = 0
         for u in range(9):
-            if B[u].isKnown:
+            if self.boxes[b-1][u].isKnown:
                 knownvalues += 1
                 for utarget in range(9):
                     if u!=utarget:
-                        B[utarget].RemoveOption(B[u].value)
+                        self.boxes[b-1][utarget].RemoveOption(self.boxes[b-1][u].value)
                         
         if knownvalues == 9:
             self.known_boxes.append(b)
@@ -288,17 +289,15 @@ class Sudoku:
         if b in self.known_boxes:
             return
         
-        box = self.GetBox(b)
-        
         locations = [[] for a in range(9)]
         
         for i in range(9):
-            cell = box[i]
+            cell = self.boxes[b-1][i]
             for x in cell.candidates:
                 locations[x-1].append(i)
        
         for l in range(9):
             if len(locations[l]) == 1:
-                cell = box[locations[l][0]]
+                cell = self.boxes[b-1][locations[l][0]]
                 if not cell.isKnown:
                     cell.Resolve(l+1)
