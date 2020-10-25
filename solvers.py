@@ -5,13 +5,20 @@ class Solver:
         self.sudoku = sudoku
         self.maxiter = maxiter
         self.debug_lvl = debug_lvl
+        self.child_solvers = []
         self.extra_init()
+        # DEBUG_LVL:
         # 0: No prints
         # 1: Only final result
         # 2: Step-by-step info
         # 3: Step-by-step info and partial results
     def extra_init(self):
         pass
+    
+    def SwitchSudoku(self, new_sudoku):
+        self.sudoku = new_sudoku
+        for c in self.child_solvers:
+            c.SwitchSudoku(new_sudoku)
     
     def Execute(self):
         try:
@@ -47,7 +54,7 @@ class Solver:
             print(self.sudoku)
             print('%d passes employed'%npasses)
         
-        if self.sudoku.GetUncertainty() > 0:
+        if self.sudoku.UpdateUncertainty() > 0:
             raise SolveError('Failed to remove all uncertainty')
 
     def Verify(self):
@@ -59,70 +66,64 @@ class Solver:
 
 class SinglesSolver(Solver):
     def extra_init(self):
-        self.uncertainty = self.sudoku.GetUncertainty()
+        self.sudoku.UpdateUncertainty()
         
     def iterate_once(self,i):
         self.naked_single_pass()
         self.hidden_single_pass()
         
-        uncert_old = self.uncertainty
+        uncert_old = self.sudoku.cached_uncertainty
         
-        self.uncertainty = self.sudoku.GetUncertainty()
-        
-        if self.uncertainty == 0:
+        if self.sudoku.UpdateUncertainty() == 0:
             return True
         
-        if self.uncertainty == uncert_old:
+        if self.sudoku.cached_uncertainty == uncert_old:
             raise CannotProgressError(i)
         
         return False
 
 class BranchingSolver(Solver):
     def extra_init(self):
-        self.uncertainty = self.sudoku.GetUncertainty()
-        if self.debug_lvl > 1 : print(' START - %.2f%% uncertainty\n'%(100*self.uncertainty))
+        if self.debug_lvl > 1 : print(' START - %.2f%% uncertainty\n'%(100*self.sudoku.UpdateUncertainty()))
         self.snapshots = []
+        self.child_solvers.append(SinglesSolver(self.sudoku, 5))
     
     def iterate_once(self,i):
+        cannot_progress = False
+        no_uncertainty = False
         try:
-            old_uncert = self.uncertainty
-            
-            self.naked_single_pass()
-            self.hidden_single_pass()
-            self.uncertainty = self.sudoku.GetUncertainty()
-            
-            if self.uncertainty == 0:
-                self.sudoku.AssertNoDuplicates()
-                if self.debug_lvl > 1 : print('<'*len(self.snapshots),'Step %d - Solved (0%% uncertainty)'%i)
-                return True
+            for child in self.child_solvers:
+                no_uncertainty = child.iterate_once(i)            
+                if no_uncertainty:
+                    self.sudoku.AssertNoDuplicates()
+                    if self.debug_lvl > 1 : print('<'*len(self.snapshots),'Step %d - Solved (0%% uncertainty)'%i)
+                    return True
+                if self.debug_lvl > 1 : print('|'*len(self.snapshots) + ' Step %d - Reduced uncertainty to %.2f%%'%(i, 100*self.sudoku.UpdateUncertainty()))
             
         except CellLevelError as e:
             try:
-                self.sudoku = self.snapshots.pop()
+                self.SwitchSudoku(self.snapshots.pop())
             except IndexError:
                 raise SolveError('Unexpected failed branch popping')
+            self.sudoku.UpdateUncertainty()
             if self.debug_lvl > 1 : print('|'*len(self.snapshots) +'< Step %d'%i,'- Impossibility reached at %s'%e.GetCellCoords())
             if self.debug_lvl > 2 : print(self.sudoku)
             return False
         
-        
-        if old_uncert == self.uncertainty:
-            index = self.best_guess()
+        except CannotProgressError:
+            index = self.cell_fewest_candidates()
             guess = self.sudoku[index].candidates[0]
             if self.debug_lvl > 1 : print('|'*(len(self.snapshots)) 
                 + '> Step %i - Guessing %s is %d out of'%(i,self.sudoku[index].GetCoords(),guess),self.sudoku[index].candidates)
             self.snapshots.append(self.sudoku.copy())
             self.snapshots[-1][index].RemoveOption(guess)
             self.sudoku[index].Resolve(guess)
-            self.uncertainty = self.sudoku.GetUncertainty()
-            
-        else:
-            if self.debug_lvl > 1 : print('|'*len(self.snapshots) + ' Step %d - Reduced uncertainty to %.2f%%'%(i, 100*self.uncertainty))
-            
+            self.sudoku.UpdateUncertainty()            
+
         if self.debug_lvl > 2 : print(self.sudoku)
         return False
                 
-    def best_guess(self):
+    def cell_fewest_candidates(self):
         min_n_candidates = 10
         min_id = -1
         for i in range(1,10):
