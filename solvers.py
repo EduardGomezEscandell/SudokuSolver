@@ -1,14 +1,15 @@
 from errors import SolveError, CellLevelError, VerificationError, CannotProgressError, ReachedMaxIterError
 
 class Solver:
-    def __init__(self, sudoku, *args, **kwargs):
+    def __init__(self, sudoku, *args, **kwargs):        
+        self.sudoku = sudoku
         self.maxiter=1000
         self.debug_lvl=0
         if 'maxiter'   in kwargs: self.maxiter  = kwargs['maxiter']
         if 'debug_lvl' in kwargs: self.debug_lvl= kwargs['debug_lvl']
         
-        self.sudoku = sudoku
-        self.child_solvers = []
+        self.print(' START - %.2f%% uncertainty'%(100*self.sudoku.UpdateUncertainty()), debug_lvl=1)
+
         self.child_solvers = [] # Used by recursive algorithms
         if 'Info' in kwargs:
             self.extra_init(kwargs['Info'])
@@ -35,9 +36,10 @@ class Solver:
     
     def print(self, *msg, **kwargs):
         debug_lvl_required = 0
-        if 'debug_lvl'  in kwargs: debug_lvl_required = kwargs['debug_lvl']
+        debug_lvl_required = kwargs.pop('debug_lvl',0)
+            
         if self.debug_lvl > debug_lvl_required:
-            print(*msg)
+            print(*msg, **kwargs)
         
     def SwitchSudoku(self, new_sudoku):
         self.sudoku = new_sudoku
@@ -56,18 +58,6 @@ class Solver:
         
     def iterate_once(self,i):
         raise SolveError('This is a base class. Please use a subclass to solve.')
-
-    def hidden_single_pass(self):
-        for i in range(9):
-            self.sudoku.HiddenSingleInRow(i+1)
-            self.sudoku.HiddenSingleInCol(i+1)
-            self.sudoku.HiddenSingleInBox(i+1)
-            
-    def naked_single_pass(self):
-        for i in range(9):
-            self.sudoku.NakedSingleInRow(i+1)
-            self.sudoku.NakedSingleInCol(i+1)
-            self.sudoku.NakedSingleInBox(i+1)
             
     def Finalize(self, npasses):
         if npasses==self.maxiter:
@@ -87,6 +77,7 @@ class Solver:
             self.print('The grid is INCORRECT')
 
 class SinglesSolver(Solver):
+    # Necessary methods
     def extra_init(self, *args, **kwargs):
         self.sudoku.UpdateUncertainty()
         
@@ -95,14 +86,30 @@ class SinglesSolver(Solver):
         self.hidden_single_pass()
         
         uncert_old = self.sudoku.cached_uncertainty
+        self.sudoku.UpdateUncertainty()
         
-        if self.sudoku.UpdateUncertainty() == 0:
+        if self.sudoku.cached_uncertainty == 0:
+            self.print('Step %d - Solved (0%% uncertainty)'%i, debug_lvl=1)
             return True
         
+        self.print('Step %d - Reduced uncertainty to %.2f%%'%(i, 100*self.sudoku.UpdateUncertainty()),debug_lvl=1)        
         if self.sudoku.cached_uncertainty == uncert_old:
             raise CannotProgressError(i)
         
         return False
+    
+    # Support methods
+    def hidden_single_pass(self):
+        for i in range(9):
+            self.sudoku.HiddenSingleInRow(i+1)
+            self.sudoku.HiddenSingleInCol(i+1)
+            self.sudoku.HiddenSingleInBox(i+1)
+            
+    def naked_single_pass(self):
+        for i in range(9):
+            self.sudoku.NakedSingleInRow(i+1)
+            self.sudoku.NakedSingleInCol(i+1)
+            self.sudoku.NakedSingleInBox(i+1)
 
 class BranchingSolver(Solver):
     # HOW TO USE
