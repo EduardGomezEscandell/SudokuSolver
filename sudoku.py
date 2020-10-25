@@ -16,7 +16,7 @@ class Sudoku:
         self.known_rows = []
         self.known_cols = []
         self.known_boxes = []
-        
+        self.correct = [[0 for i in range(9)] for i in range(9)]
         self.boxes = [self.BuildBox(i) for i in range(1,10)]
 
     def load(self, filename, loadsolution='False'):
@@ -25,7 +25,7 @@ class Sudoku:
             line = skip_to_line(f, "Begin Sudoku")
             i = 0
             for line in f:
-                if "End" in line:
+                if "End Sudoku" in line:
                     break
                 j = 0
                 for c in line:
@@ -36,11 +36,10 @@ class Sudoku:
                     j+=1
                 i+=1
             if loadsolution:
-                self.correct = [[0 for i in range(9)] for i in range(9)]
                 line = skip_to_line(f, "Begin Solution")
                 i = 0
                 for line in f:
-                    if "End" in line:
+                    if "End Solution" in line:
                         break
                     j = 0
                     for c in line:
@@ -67,10 +66,11 @@ class Sudoku:
         for i in range(9):
             for j in range(9):
                 new_sudoku.board[i][j] = self.board[i][j].copy()
-        new_sudoku.known_rows  = self.known_rows
-        new_sudoku.known_cols  = self.known_cols
-        new_sudoku.known_boxes = self.known_boxes
-        new_sudoku.correct = self.correct
+                new_sudoku.correct[i][j] = self.correct[i][j]
+        new_sudoku.known_rows  = self.known_rows.copy()
+        new_sudoku.known_cols  = self.known_cols.copy()
+        new_sudoku.known_boxes = self.known_boxes.copy()
+        
         return new_sudoku
 
     #################################
@@ -104,7 +104,7 @@ class Sudoku:
         box = []
         for r in rows:
             for c in cols:
-                box.append(self.board[r-1][c-1])
+                box.append(self[r,c])
         return box
         
     #################################
