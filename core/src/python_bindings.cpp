@@ -17,5 +17,9 @@ PYBIND11_MODULE(sudoku_core,m){
             .def("__str__",&Cell::ToString)
             ;
 
+    py::class_<Sudoku>(m,"Sudou")
+            .def(py::init<>())
+            .def("Load",&Sudoku::Load)
+            .def("__str__",&Sudoku::ToString)
             ;
 }
