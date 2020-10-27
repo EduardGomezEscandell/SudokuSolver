@@ -1,5 +1,4 @@
 import solvers
-import errors
 from sudoku import Sudoku
 
 # Example program
@@ -29,7 +28,7 @@ s = Sudoku()
 s.load(filename)
 print('-'*80)
 print('Trying the branching algorithm\n')
-solver = solvers.BranchingSolver(s,maxiter=1000,debug_lvl=2,Info={'SinglesSolver':{'maxiter':1000,'debug_lvl':1}})
+solver = solvers.BranchingSolver(s,maxiter=1000,debug_lvl=2,Info={'SinglesSolver':{'maxiter':1000,'debug_lvl':0}})
 try:
     solver.Execute()
     solver.Verify()
