@@ -1,4 +1,16 @@
 #include "cell.h"
+#include "sudoku.h"
+
+namespace py = pybind11;
+
+Cell::Cell()
+{
+    mRow = 0;
+    mCol = 0;
+    mSolved = false;
+    mValue = 0;
+    mCandidates = {1,2,3,4,5,6,7,8,9};
+}
 
 Cell::Cell(const int i, const int j)
 {
@@ -9,12 +21,30 @@ Cell::Cell(const int i, const int j)
     mCandidates = {1,2,3,4,5,6,7,8,9};
 }
 
-Cell::Cell(Cell & rOther)
+Cell::Cell(const Cell & rOther)
 {
     mRow = rOther.mRow;
     mCol = rOther.mCol;
     mSolved = rOther.mSolved;
     mCandidates = rOther.mCandidates;
+}
+
+void Cell::GiveOwner(const int i, const int j, Sudoku &rOwner)
+{
+    mRow = i;
+    mCol = j;
+    mpOwner = &rOwner;
+}
+
+Sudoku & Cell::GetOwner()
+{
+    return *mpOwner;
+}
+
+void Cell::RemoveOwner()
+{
+    mpOwner = nullptr;
+    mRow = mCol = 0;
 }
 
 std::tuple<int, int> Cell::GetCoords()
@@ -38,10 +68,18 @@ Candidates Cell::GetCandidates()
 
 void Cell::Solve(const int value)
 {
+    if(value < 0 || value > 9)
+    {
+        py::value_error("A Sudoku entry must be between 1 and 9");
+    }
     mSolved = true;
     mValue = value;
     mCandidates.clear();
     mCandidates = {value};
+    if(mpOwner != nullptr)
+    {
+        mpOwner->mAbsUncertainty--;
+    }
 }
 
 int Cell::GetValue()
@@ -66,4 +104,9 @@ std::ostream & Cell::operator<<(std::ostream & Str) {
 std::string Cell::ToString()
 {
     return mSolved ? std::to_string(mValue) : "·";
+}
+
+bool Cell::isSolved()
+{
+    return mSolved;
 }
