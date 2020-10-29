@@ -2,6 +2,8 @@
 
 namespace py = pybind11;
 
+namespace SudokuSolve{
+
 Sudoku::Sudoku()
 {
     // Generating grid
@@ -149,3 +151,5 @@ inline double Sudoku::GetUncertainty()
 {
     return mAbsUncertainty / mMmaximumCandidates;
 }
+
+} //namespace SudokuSolve

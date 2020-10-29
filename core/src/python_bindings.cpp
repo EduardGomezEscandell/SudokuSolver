@@ -4,6 +4,7 @@
 #include "sudoku.h"
 
 namespace py = pybind11;
+namespace SudokuSolve{
 
 PYBIND11_MODULE(sudoku_core,m){
     py::class_<Cell>(m,"Cell")
@@ -27,3 +28,4 @@ PYBIND11_MODULE(sudoku_core,m){
             .def("Load",&Sudoku::Load)
             ;
 }
+} //namespace SudokuSolve

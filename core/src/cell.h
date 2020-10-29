@@ -10,6 +10,8 @@
 
 typedef std::list<int> Candidates;
 
+namespace SudokuSolve{
+
 class Sudoku;
 
 class Cell
@@ -44,5 +46,7 @@ protected:
     Candidates mCandidates;
     Sudoku * mpOwner = nullptr;
 };
+
+} // namespace SudokuSolve
 
 #endif // CELL_H

@@ -10,6 +10,8 @@
 #include <string>
 #include <sstream>
 
+namespace SudokuSolve{
+
 class Sudoku
 {
 public:
@@ -39,4 +41,5 @@ protected:
     void BuildBoxes();
 };
 
+} // namespace SudokuSolve
 #endif // SUDOKU_H

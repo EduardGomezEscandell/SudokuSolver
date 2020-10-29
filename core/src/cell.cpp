@@ -3,6 +3,8 @@
 
 namespace py = pybind11;
 
+namespace SudokuSolve {
+
 Cell::Cell()
 {
     mRow = 0;
@@ -109,4 +111,6 @@ std::string Cell::ToString()
 bool Cell::isSolved()
 {
     return mSolved;
+}
+
 }
