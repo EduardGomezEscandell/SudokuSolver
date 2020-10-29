@@ -13,7 +13,7 @@ PYBIND11_MODULE(sudoku_core,m){
             .def(py::init<Cell&>())
             .def("__str__",&Cell::ToString)
             .def("copy",[](const Cell & self){return Cell(self);})
-            .def("IsSolved",&Cell::isSolved)
+            .def("IsSolved",&Cell::IsSolved)
             .def("GetValue",&Cell::GetValue)
             .def("GetCoords",&Cell::GetCoords)
             .def("GetCandidates",&Cell::GetCandidates)
@@ -30,7 +30,11 @@ PYBIND11_MODULE(sudoku_core,m){
             ;
 
     py::class_<Solver>(m, "Solver")
-            .def(py::init<>())
+            .def(py::init<Sudoku&, const int, const int>(), py::arg("Sudoku") = Sudoku(), py::arg("maxiter") = 500, py::arg("debug_lvl") = 0)
+            .def("Execute", &Solver::Execute)
+            .def("GetSudoku",&Solver::GetSudoku)
+            .def("__str__",&Solver::ToString)
             ;
+
 }
 } //namespace SudokuSolve

@@ -18,20 +18,18 @@ class Cell
 {
 public:
     // Constructors
-    Cell();
     Cell(const int i, const int j);
     Cell(const Cell & rOther); // Copy constructor
 
     // Getters
     int GetValue();
-    bool isSolved();
+    bool IsSolved();
     Sudoku & GetOwner();
     Candidates GetCandidates();
     std::tuple<int, int> GetCoords();
 
     // Output
     std::string ToString();
-    std::ostream & operator<<(std::ostream & Str);
 
     // Manipulators
     void GiveOwner(const int i, const int j, Sudoku & rOwner);
@@ -46,6 +44,7 @@ protected:
     Candidates mCandidates;
     Sudoku * mpOwner = nullptr;
 };
+std::ostream & operator<<(std::ostream & Str, Cell & cell);
 
 } // namespace SudokuSolve
 

@@ -5,15 +5,6 @@ namespace py = pybind11;
 
 namespace SudokuSolve {
 
-Cell::Cell()
-{
-    mRow = 0;
-    mCol = 0;
-    mSolved = false;
-    mValue = 0;
-    mCandidates = {1,2,3,4,5,6,7,8,9};
-}
-
 Cell::Cell(const int i, const int j)
 {
     mRow = i;
@@ -93,13 +84,12 @@ int Cell::GetValue()
     }
 }
 
-std::ostream & Cell::operator<<(std::ostream & Str) {
-  if(mSolved){
-    Str<<mValue;
+std::ostream & operator<<(std::ostream & Str, Cell & cell) {
+  if(cell.IsSolved()){
+    Str<<cell.GetValue();
   } else {
     Str<<"·";
   }
-    // print something from v to str, e.g: Str << v.getX();
   return Str;
 }
 
@@ -108,7 +98,7 @@ std::string Cell::ToString()
     return mSolved ? std::to_string(mValue) : "·";
 }
 
-bool Cell::isSolved()
+bool Cell::IsSolved()
 {
     return mSolved;
 }

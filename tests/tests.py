@@ -60,7 +60,17 @@ class TestSudoku(unittest.TestCase):
                 except:
                     raise AssertionError("Failure at r%dc%d"%cell.GetCoords())
 
-        
+    def test_Solver(self):
+        s = sdk.Sudoku()
+        dlvl = 1
+        miter = 20
+        filename = GetPath('data/1')
+        s.Load(filename)
+        solver = sdk.Solver(s, miter, debug_lvl=dlvl)
+#        msg = str(solver)
+#        self.assertIn("Base class for solvers",msg)
+#        self.assertIn(str(miter),msg)
+#        self.assertIn(str(dlvl),msg)
 
 if __name__ == '__main__':
     unittest.main()

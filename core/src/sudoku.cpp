@@ -88,19 +88,25 @@ void Sudoku::Load(std::string filename)
 
 std::string Sudoku::ToString()
 {
-    std::string outp;
+    std::stringstream ss;
     for(int i=0; i<9; i++)
     {
         for(int j=0; j<9; j++)
         {
-            outp += mGrid[i][j].ToString();
-            if(j%3 == 2) outp += ' ';
+            ss << mGrid[i][j];
+            if(j%3 == 2) ss << ' ';
         }
-        outp += '\n';
-        if(i==2 || i==5) outp += '\n';
+        ss<<std::endl;
+        if(i==2 || i==5) ss<<std::endl;
     }
-    return outp;
+    return ss.str();
 }
+
+std::ostream & operator<<(std::ostream & Str, Sudoku & sudoku)
+{
+    return Str<< sudoku.ToString();
+}
+
 
 Cell & Sudoku::operator()(const int row, const int col)
 {
@@ -135,13 +141,13 @@ void Sudoku::assertNoDuplicates()
             ss << 'r' << i << 'r' << j;
             std::string rowcol = ss.str();
 
-            value = mGrid[i][j].isSolved() ? mGrid[i][j].GetValue() : 0;
+            value = mGrid[i][j].IsSolved() ? mGrid[i][j].GetValue() : 0;
             if(value && ++rowcounter[value] > 1) throw py::value_error("Invalid digit at "+rowcol);
 
-            value = mGrid[j][i].isSolved() ? mGrid[j][i].GetValue() : 0;
+            value = mGrid[j][i].IsSolved() ? mGrid[j][i].GetValue() : 0;
             if(value && ++colcounter[value] > 1) throw py::value_error("Invalid digit at "+rowcol);
 
-            value = mBoxes[i][j]->isSolved() ? mBoxes[i][j]->GetValue() : 0;
+            value = mBoxes[i][j]->IsSolved() ? mBoxes[i][j]->GetValue() : 0;
             if(value && ++boxcounter[value] > 1) throw py::value_error("Invalid digit at "+rowcol);
         }
     }
