@@ -9,6 +9,7 @@ add_subdirectory(pybind11)
 
 pybind11_add_module(sudoku_core SHARED
                     python_bindings.cpp
+                    solver.cpp
                     cell.cpp
                     sudoku.cpp
                     )

@@ -2,6 +2,7 @@
 #include <pybind11/stl.h>
 #include "cell.h"
 #include "sudoku.h"
+#include "solver.h"
 
 namespace py = pybind11;
 namespace SudokuSolve{
@@ -26,6 +27,10 @@ PYBIND11_MODULE(sudoku_core,m){
             .def("__getitem__",&Sudoku::operator[], py::return_value_policy::reference)
             .def("copy",[](const Sudoku & self){return Sudoku(self);})
             .def("Load",&Sudoku::Load)
+            ;
+
+    py::class_<Solver>(m, "Solver")
+            .def(py::init<>())
             ;
 }
 } //namespace SudokuSolve
