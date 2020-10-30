@@ -1,25 +1,27 @@
 #include "cell.h"
 #include "sudoku.h"
+#include "exceptions.h"
 
 namespace py = pybind11;
 
 namespace SudokuSolve {
 
-Cell::Cell(const int i, const int j)
+Cell::Cell(const int i, const int j) :
+    mRow(i),
+    mCol(j),
+    mValue(0),
+    mSolved(false),
+    mCandidates({1,2,3,4,5,6,7,8,9})
 {
-    mRow = i;
-    mCol = j;
-    mSolved = false;
-    mValue = 0;
-    mCandidates = {1,2,3,4,5,6,7,8,9};
 }
 
-Cell::Cell(const Cell & rOther)
+Cell::Cell(const Cell & rOther) :
+    mRow(rOther.mRow),
+    mCol(rOther.mCol),
+    mValue(rOther.mValue),
+    mSolved(rOther.mSolved),
+    mCandidates(rOther.mCandidates)
 {
-    mRow = rOther.mRow;
-    mCol = rOther.mCol;
-    mSolved = rOther.mSolved;
-    mCandidates = rOther.mCandidates;
 }
 
 void Cell::GiveOwner(const int i, const int j, Sudoku &rOwner)
@@ -40,16 +42,28 @@ void Cell::RemoveOwner()
     mRow = mCol = 0;
 }
 
-std::tuple<int, int> Cell::GetCoords()  const
+std::tuple<int, int> Cell::GetCoords()
 {
     return std::tie(mRow, mCol);
 }
 
-template<typename Container>
-inline int Cell::PopCandidates(const Container & rContainer)
+std::string Cell::GetFormatedCoords() const
 {
+    std::stringstream ss;
+    ss << "r" << mRow << "c" << mCol;
+    return ss.str();
+}
+
+
+int Cell::PopCandidates(std::set<int> & rContainer)
+{
+    std::size_t len = mCandidates.size();
     for(int value : rContainer) mCandidates.remove(value);
-    // TODO: Throw NoCandidatesError exception
+    if(mCandidates.size() == 0)
+    {
+        throw NoCandidatesError(*this);
+    }
+    return len - mCandidates.size();
 }
 
 
@@ -57,8 +71,11 @@ bool Cell::PopCandidate(const int toRemove)
 {
     std::size_t len = mCandidates.size();
     mCandidates.remove(toRemove);
+    if(mCandidates.size() == 0)
+    {
+        throw NoCandidatesError(*this);
+    }
     return len!=mCandidates.size();
-    // TODO: Throw NoCandidatesError exception
 }
 
 Candidates Cell::GetCandidates() const

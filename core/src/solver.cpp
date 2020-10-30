@@ -1,4 +1,5 @@
 #include "solver.h"
+#include "exceptions.h"
 #include <pybind11/pybind11.h>
 
 namespace SudokuSolve {
@@ -30,14 +31,16 @@ void Solver::Execute()
 
 bool Solver::IterateOnce()
 {
-    return false;
+    throw SolveError("Attempting to use superclass to solve.");
 }
 
 void Solver::Finalize()
 {
-    if(mIters == mMaxIter-1) throw py::stop_iteration();
+    if(mIters == mMaxIter-1) throw ReachedMaxIterError();
 
     PRINT(Debug::none,"SOLUTION"<<std::endl<<mpSudoku->ToString()<<std::endl<<mIters<<" iterations employed"<<std::endl);
+
+    if(mpSudoku->GetUncertainty() > 0) throw SolveError("Failed to reduce all uncertainty");
 }
 
 Sudoku & Solver::GetSudoku()

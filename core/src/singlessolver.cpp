@@ -1,4 +1,5 @@
 #include "singlessolver.h"
+#include "exceptions.h"
 
 namespace py = pybind11;
 
@@ -34,7 +35,7 @@ bool SinglesSolver::IterateOnce()
         return true;
     }
 
-    if(uncertainty == old_uncertainty) throw "Cannot progress!";
+    if(uncertainty == old_uncertainty) throw CannotProgressError(mIters);
     return false;
 }
 
@@ -189,7 +190,6 @@ void SinglesSolver::HiddenSingleInBox(int box)
         }
     }
     // Solving all cells with unique candidates
-    int nknown = 0;
     for(int candidate=1; candidate<10; candidate++)
     {
         std::list<int> & possible_entries = possible_entries_per_candidate[candidate-1];
@@ -197,7 +197,6 @@ void SinglesSolver::HiddenSingleInBox(int box)
         {
             Cell & cell = mpSudoku->AccessByBox(box, possible_entries.front());
             if(!cell.IsSolved()) cell.Solve(candidate);
-            nknown++;
         }
     }
 }

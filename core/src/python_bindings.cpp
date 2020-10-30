@@ -4,6 +4,7 @@
 #include "sudoku.h"
 #include "solver.h"
 #include "singlessolver.h"
+#include "exceptions.h"
 
 namespace py = pybind11;
 namespace SudokuSolve{
