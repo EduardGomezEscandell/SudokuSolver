@@ -1,4 +1,5 @@
 #include "sudoku.h"
+#include "exceptions.h"
 
 namespace py = pybind11;
 
@@ -36,11 +37,14 @@ void Sudoku::BuildBoxes()
 {
     for(int b=0; b<9; b++)
     {
-        for(int k=0; k<9;k++)
+        for(int i=0; i<3; i++)
         {
-            int i = b/3 + k/3;
-            int j = b%3 + k%3;
-            mBoxes[b][k] = &(mGrid[i][j]);
+            for(int j=0; j<3; j++)
+            {
+                int row = i + 3*(b/3);
+                int col = j + 3*(b%3);
+                mBoxes[b][3*i+j] = &(mGrid[row][col]);
+            }
         }
     }
 }
@@ -93,7 +97,7 @@ std::string Sudoku::ToString() const
     {
         for(int j=0; j<9; j++)
         {
-            ss << mGrid[i][j];
+            ss << mGrid[i][j].ToString();
             if(j%3 == 2) ss << ' ';
         }
         ss<<std::endl;
@@ -101,12 +105,6 @@ std::string Sudoku::ToString() const
     }
     return ss.str();
 }
-
-std::ostream & operator<<(std::ostream & Str,  const Sudoku & sudoku)
-{
-    return Str<< sudoku.ToString();
-}
-
 
 Cell & Sudoku::operator()(const int row, const int col)
 {
@@ -126,7 +124,7 @@ Cell & Sudoku::operator[](std::tuple<int, int> index)
     return this->operator()(row,col);
 }
 
-void Sudoku::assertNoDuplicates()  const
+void Sudoku::assertNoDuplicates() const
 {
     int value;
     for(int i=0; i<9; i++)
@@ -137,28 +135,24 @@ void Sudoku::assertNoDuplicates()  const
 
         for(int j=0; j<9; j++)
         {
-            std::stringstream ss;
-            ss << 'r' << i << 'r' << j;
-            std::string rowcol = ss.str();
-
             value = mGrid[i][j].IsSolved() ? mGrid[i][j].GetValue() : 0;
-            if(value && ++rowcounter[value] > 1) throw py::value_error("Invalid digit at "+rowcol);
+            if(value && ++rowcounter[value] > 1) throw DuplicateEntryError(mGrid[i][j]);
 
             value = mGrid[j][i].IsSolved() ? mGrid[j][i].GetValue() : 0;
-            if(value && ++colcounter[value] > 1) throw py::value_error("Invalid digit at "+rowcol);
+            if(value && ++colcounter[value] > 1) throw DuplicateEntryError(mGrid[j][i]);
 
             value = mBoxes[i][j]->IsSolved() ? mBoxes[i][j]->GetValue() : 0;
-            if(value && ++boxcounter[value] > 1) throw py::value_error("Invalid digit at "+rowcol);
+            if(value && ++boxcounter[value] > 1) throw DuplicateEntryError(*mBoxes[i][j]);
         }
     }
 }
 
-inline double Sudoku::GetUncertainty()  const
+double Sudoku::GetUncertainty()  const
 {
     return mAbsUncertainty / mMmaximumCandidates;
 }
 
-inline Cell & Sudoku::AccessByBox(const int boxId, const int entry)
+Cell & Sudoku::AccessByBox(const int boxId, const int entry)
 {
     if(!ValueWithin(boxId,0,9) || !ValueWithin(entry,0,9))
     {
@@ -166,7 +160,7 @@ inline Cell & Sudoku::AccessByBox(const int boxId, const int entry)
         msg<< "Tried to access b" << boxId <<"e"<<entry;
         throw py::index_error(msg.str());
     }
-    return *(mBoxes[boxId][entry]);
+    return *(mBoxes[boxId-1][entry-1]);
 }
 
 } //namespace SudokuSolve

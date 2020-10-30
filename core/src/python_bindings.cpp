@@ -18,6 +18,7 @@ PYBIND11_MODULE(sudoku_core,m){
             .def("IsSolved",&Cell::IsSolved)
             .def("GetValue",&Cell::GetValue)
             .def("GetCoords",&Cell::GetCoords)
+            .def("GetFormatedCoords",&Cell::GetFormatedCoords)
             .def("GetCandidates",&Cell::GetCandidates)
             .def("PopCandidate",&Cell::PopCandidate)
             .def("Solve",&Cell::Solve)
@@ -27,6 +28,7 @@ PYBIND11_MODULE(sudoku_core,m){
             .def(py::init<>())
             .def("__str__",&Sudoku::ToString)
             .def("__getitem__",&Sudoku::operator[], py::return_value_policy::reference)
+            .def("AccessByBox",&Sudoku::AccessByBox)
             .def("copy",[](const Sudoku & self){return Sudoku(self);})
             .def("Load",&Sudoku::Load)
             ;

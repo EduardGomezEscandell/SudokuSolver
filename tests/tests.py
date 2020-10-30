@@ -61,7 +61,7 @@ class TestSudoku(unittest.TestCase):
                 except:
                     raise AssertionError("Failure at r%dc%d"%cell.GetCoords())
 
-    def test_Solver(self):
+    def test_Solver_init(self):
         s = sdk.Sudoku()
         dlvl = 1
         miter = 20
@@ -71,7 +71,73 @@ class TestSudoku(unittest.TestCase):
         msg = str(solver)
         print(msg)
         self.assertIn("Base class for solvers",msg)
-        self.assertIn(str(miter),msg)#        self.assertIn(str(dlvl),msg)
+        self.assertIn(str(miter),msg)
+        self.assertIn(str(dlvl),msg)
+        
+    def test_Solver_solve(self):
+        print('')
+        s = sdk.Sudoku()
+        dlvl = 1
+        miter = 200
+        filename = GetPath('data/1')
+        correct = [[0]*9 for i in range(9)]
+        with open(filename + '.sdk') as f:
+            for line in f:
+                if "Begin Solution" in line:
+                    break
+            i = 0
+            for line in f:
+                if "End Solution" in line:
+                    break
+                j = 0
+                for c in line:
+                    if c=='\n':
+                        break                
+                    correct[i][j] = int(c)
+                    j+=1
+                i+=1
+        s.Load(filename)
+        solver = sdk.SinglesSolver(s, miter, dlvl)
+        solver.Execute()
+        print(solver)
+        for r in range(1,10):
+            for c in range(1,10):
+                self.assertEqual(correct[r-1][c-1], solver.GetSudoku()[r,c].GetValue())
 
 if __name__ == '__main__':
     unittest.main()
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

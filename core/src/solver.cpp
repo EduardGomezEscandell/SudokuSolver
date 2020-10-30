@@ -51,7 +51,7 @@ Sudoku & Solver::GetSudoku()
 std::string Solver::ToString()
 {
     std::stringstream ss;
-    ss << GetDescription() <<"\nMax iter : "<<mMaxIter<<"\nDebug_lvl : "<<(int)mDebugLvl<<"\n"<<*mpSudoku<<"";
+    ss << GetDescription() <<"\nMax iter : "<<mMaxIter<<"\nDebug_lvl : "<<(int)mDebugLvl<<"\n"<<mpSudoku->ToString()<<"";
     return ss.str();
 }
 

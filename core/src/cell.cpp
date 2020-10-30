@@ -106,16 +106,6 @@ int Cell::GetValue() const
     }
 }
 
-std::ostream & operator<<(std::ostream & Str, const Cell & cell)
-{
-  if(cell.IsSolved()){
-    Str<<cell.GetValue();
-  } else {
-    Str<<"·";
-  }
-  return Str;
-}
-
 std::string Cell::ToString() const
 {
     return mSolved ? std::to_string(mValue) : "·";

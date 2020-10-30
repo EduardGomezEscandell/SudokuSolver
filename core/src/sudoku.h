@@ -12,7 +12,6 @@
 #include <sstream>
 
 namespace SudokuSolve{
-std::ostream& operator<<(std::ostream & Str, Sudoku & sudoku);
 
 // Machine-generated code
 #define BLANK_GRID  {                                                                                   \
@@ -58,8 +57,6 @@ protected:
 
     void BuildBoxes();
 };
-
-std::ostream & operator<<(std::ostream & Str, const Sudoku & sudoku);
 
 } // namespace SudokuSolve
 #endif // SUDOKU_H
