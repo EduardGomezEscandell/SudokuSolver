@@ -16,11 +16,10 @@ enum class Debug{none, results, info, full};
 class Solver
 {
 public:
-    Solver(Sudoku & rSudoku, const int max_iter, const Debug debug_lvl);
     Solver(Sudoku & rSudoku, const int max_iter, const int debug_lvl);
     void Execute();
     std::string ToString();
-    const Sudoku & GetSudoku();
+    Sudoku & GetSudoku();
 protected:
     int mMaxIter = 400;
     Debug mDebugLvl = Debug::full;

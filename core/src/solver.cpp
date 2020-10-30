@@ -3,17 +3,11 @@
 
 namespace SudokuSolve {
 
-Solver::Solver(Sudoku & rSudoku, const int max_iter, const Debug debug_lvl)
+Solver::Solver(Sudoku & rSudoku, const int max_iter, const int debug_lvl) :
+    mMaxIter {max_iter},
+    mDebugLvl{(Debug) debug_lvl},
+    mpSudoku {&rSudoku}
 {
-    mpSudoku = &rSudoku;
-    mMaxIter = max_iter;
-    mDebugLvl = debug_lvl;
-}
-
-Solver::Solver(Sudoku & rSudoku, const int max_iter, const int debug_lvl)
-{
-    Debug debug = (Debug) debug_lvl;
-    Solver(rSudoku, max_iter, debug);
 }
 
 void Solver::SwitchSudoku(Sudoku & rSudoku)
@@ -46,7 +40,7 @@ void Solver::Finalize()
     PRINT(Debug::none,"SOLUTION"<<std::endl<<mpSudoku->ToString()<<std::endl<<mIters<<" iterations employed"<<std::endl);
 }
 
-const Sudoku & Solver::GetSudoku()
+Sudoku & Solver::GetSudoku()
 {
     return *mpSudoku;
 }

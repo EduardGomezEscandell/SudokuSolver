@@ -29,10 +29,11 @@ class TestSudoku(unittest.TestCase):
         self.assertEqual(c2.GetValue(), value2)
 
     def test_sudoku_load(self):
-        s = sdk.Sudoku()
+        s0 = sdk.Sudoku()
         filename = GetPath('data/1')
-        s.Load(filename)
+        s0.Load(filename)
         values=[[0]*9 for i in range(9)]
+        s=s0.copy() # Testing copy
         with open(filename + '.sdk', "r") as f:
             i = 0
             for line in f:
@@ -66,11 +67,11 @@ class TestSudoku(unittest.TestCase):
         miter = 20
         filename = GetPath('data/1')
         s.Load(filename)
-        solver = sdk.Solver(s, miter, debug_lvl=dlvl)
-#        msg = str(solver)
-#        self.assertIn("Base class for solvers",msg)
-#        self.assertIn(str(miter),msg)
-#        self.assertIn(str(dlvl),msg)
+        solver = sdk.Solver(s, miter, dlvl)
+        msg = str(solver)
+        print(msg)
+        self.assertIn("Base class for solvers",msg)
+        self.assertIn(str(miter),msg)#        self.assertIn(str(dlvl),msg)
 
 if __name__ == '__main__':
     unittest.main()
