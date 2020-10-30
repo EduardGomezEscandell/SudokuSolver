@@ -12,4 +12,5 @@ pybind11_add_module(sudoku_core SHARED
                     solver.cpp
                     cell.cpp
                     sudoku.cpp
+                    singlessolver.cpp
                     )

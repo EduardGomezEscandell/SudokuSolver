@@ -2,6 +2,7 @@
 #define SUDOKU_H
 
 #include "cell.h"
+#include "common.h"
 #include <pybind11/pybind11.h>
 
 #include <vector>
@@ -34,26 +35,31 @@ public:
     Sudoku(const Sudoku & rRHS);
 
     // Output
-    std::string ToString();
+    std::string ToString()  const;
 
     // Checkers
-    void assertNoDuplicates();
+    void assertNoDuplicates() const;
 
     // Getters/setters
     Cell& operator()(const int row, const int col);
     Cell& operator[](std::tuple<int,int>);
-    double GetUncertainty();
+    double GetUncertainty() const;
+    Cell & AccessByBox(const int boxId, const int entry);
 
     // Manipulators
     void Load(std::string filename);
 protected:
     friend class Cell;
+
     const int mMmaximumCandidates = 9*9*8;
     Cell mGrid[9][9] = BLANK_GRID;
     Cell * mBoxes[9][9];
     int mAbsUncertainty = mMmaximumCandidates;
+
     void BuildBoxes();
 };
+
+std::ostream & operator<<(std::ostream & Str, const Sudoku & sudoku);
 
 } // namespace SudokuSolve
 #endif // SUDOKU_H

@@ -3,6 +3,7 @@
 #include "cell.h"
 #include "sudoku.h"
 #include "solver.h"
+#include "singlessolver.h"
 
 namespace py = pybind11;
 namespace SudokuSolve{
@@ -34,6 +35,11 @@ PYBIND11_MODULE(sudoku_core,m){
             .def("__str__",&Solver::ToString)
             .def("Execute", &Solver::Execute)
             .def("GetSudoku",&Solver::GetSudoku)
+            ;
+
+    py::class_<SinglesSolver,Solver>(m, "SinglesSolver")
+            .def(py::init<Sudoku&, const int, const int>())
+            .def("IterateOnce", &SinglesSolver::IterateOnce)
             ;
 
 }

@@ -40,20 +40,28 @@ void Cell::RemoveOwner()
     mRow = mCol = 0;
 }
 
-std::tuple<int, int> Cell::GetCoords()
+std::tuple<int, int> Cell::GetCoords()  const
 {
     return std::tie(mRow, mCol);
 }
 
-int Cell::PopCandidate(const int toRemove)
+template<typename Container>
+inline int Cell::PopCandidates(const Container & rContainer)
 {
-    std::size_t len = mCandidates.size();
-    mCandidates.remove(toRemove);
-    return len==mCandidates.size() ? 0 : toRemove;
+    for(int value : rContainer) mCandidates.remove(value);
     // TODO: Throw NoCandidatesError exception
 }
 
-Candidates Cell::GetCandidates()
+
+bool Cell::PopCandidate(const int toRemove)
+{
+    std::size_t len = mCandidates.size();
+    mCandidates.remove(toRemove);
+    return len!=mCandidates.size();
+    // TODO: Throw NoCandidatesError exception
+}
+
+Candidates Cell::GetCandidates() const
 {
     Candidates ret = mCandidates;
     return ret;
@@ -61,10 +69,7 @@ Candidates Cell::GetCandidates()
 
 void Cell::Solve(const int value)
 {
-    if(value < 0 || value > 9)
-    {
-        py::value_error("A Sudoku entry must be between 1 and 9");
-    }
+    if(!ValueWithin(value,1,9)) py::value_error("A Sudoku entry must be between 1 and 9");
     mSolved = true;
     mValue = value;
     mCandidates.clear();
@@ -75,7 +80,7 @@ void Cell::Solve(const int value)
     }
 }
 
-int Cell::GetValue()
+int Cell::GetValue() const
 {
     if(mSolved){
         return mValue;
@@ -84,7 +89,8 @@ int Cell::GetValue()
     }
 }
 
-std::ostream & operator<<(std::ostream & Str, Cell & cell) {
+std::ostream & operator<<(std::ostream & Str, const Cell & cell)
+{
   if(cell.IsSolved()){
     Str<<cell.GetValue();
   } else {
@@ -93,12 +99,12 @@ std::ostream & operator<<(std::ostream & Str, Cell & cell) {
   return Str;
 }
 
-std::string Cell::ToString()
+std::string Cell::ToString() const
 {
     return mSolved ? std::to_string(mValue) : "·";
 }
 
-bool Cell::IsSolved()
+bool Cell::IsSolved() const
 {
     return mSolved;
 }

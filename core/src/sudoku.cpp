@@ -72,7 +72,7 @@ void Sudoku::Load(std::string filename)
         for(char & c : line){
             if(c == '\n') break;
             val = (int)c - 48;
-            if(val > 0 && val < 10){
+            if(ValueWithin(val,1,9)){
                 mGrid[i][j].Solve(val);
                 j++;
             }
@@ -86,7 +86,7 @@ void Sudoku::Load(std::string filename)
     f.close();
 }
 
-std::string Sudoku::ToString()
+std::string Sudoku::ToString() const
 {
     std::stringstream ss;
     for(int i=0; i<9; i++)
@@ -102,7 +102,7 @@ std::string Sudoku::ToString()
     return ss.str();
 }
 
-std::ostream & operator<<(std::ostream & Str, Sudoku & sudoku)
+std::ostream & operator<<(std::ostream & Str,  const Sudoku & sudoku)
 {
     return Str<< sudoku.ToString();
 }
@@ -110,11 +110,11 @@ std::ostream & operator<<(std::ostream & Str, Sudoku & sudoku)
 
 Cell & Sudoku::operator()(const int row, const int col)
 {
-    if(row < 0 || row > 9 || col <0 || col > 9)
+    if(!ValueWithin(row,0,9) || !ValueWithin(col,0,9))
     {
         std::stringstream msg;
-        msg<< "Tried to access r" << row << 'r' << col;
-        throw std::out_of_range(msg.str());
+        msg<< "Tried to access r" << row << 'c' << col;
+        throw py::index_error(msg.str());
     }
     return mGrid[row-1][col-1];
 }
@@ -126,7 +126,7 @@ Cell & Sudoku::operator[](std::tuple<int, int> index)
     return this->operator()(row,col);
 }
 
-void Sudoku::assertNoDuplicates()
+void Sudoku::assertNoDuplicates()  const
 {
     int value;
     for(int i=0; i<9; i++)
@@ -153,9 +153,20 @@ void Sudoku::assertNoDuplicates()
     }
 }
 
-inline double Sudoku::GetUncertainty()
+inline double Sudoku::GetUncertainty()  const
 {
     return mAbsUncertainty / mMmaximumCandidates;
+}
+
+inline Cell & Sudoku::AccessByBox(const int boxId, const int entry)
+{
+    if(!ValueWithin(boxId,0,9) || !ValueWithin(entry,0,9))
+    {
+        std::stringstream msg;
+        msg<< "Tried to access b" << boxId <<"e"<<entry;
+        throw py::index_error(msg.str());
+    }
+    return *(mBoxes[boxId][entry]);
 }
 
 } //namespace SudokuSolve

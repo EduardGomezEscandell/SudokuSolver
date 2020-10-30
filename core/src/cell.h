@@ -2,6 +2,7 @@
 #define CELL_H
 
 #include <pybind11/pybind11.h>
+#include "common.h"
 
 #include <iostream>
 #include <string>
@@ -22,20 +23,24 @@ public:
     Cell(const Cell & rOther); // Copy constructor
 
     // Getters
-    int GetValue();
-    bool IsSolved();
+    int GetValue() const;
+    bool IsSolved() const;
     Sudoku & GetOwner();
-    Candidates GetCandidates();
-    std::tuple<int, int> GetCoords();
+    Candidates GetCandidates() const;
+    std::tuple<int, int> GetCoords() const;
 
     // Output
-    std::string ToString();
+    std::string ToString() const;
 
     // Manipulators
     void GiveOwner(const int i, const int j, Sudoku & rOwner);
     void RemoveOwner();
-    int PopCandidate(const int toRemove);
     void Solve(const int value);
+    bool PopCandidate(const int toRemove);
+
+    template<typename Container>
+    int PopCandidates(const Container & rContainer);
+
 protected:
     int mRow;
     int mCol;
@@ -44,7 +49,7 @@ protected:
     Candidates mCandidates;
     Sudoku * mpOwner = nullptr;
 };
-std::ostream & operator<<(std::ostream & Str, Cell & cell);
+std::ostream & operator<<(std::ostream & Str,  const Cell & cell);
 
 } // namespace SudokuSolve
 
