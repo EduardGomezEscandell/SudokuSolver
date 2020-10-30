@@ -31,6 +31,7 @@ PYBIND11_MODULE(sudoku_core,m){
             .def("AccessByBox",&Sudoku::AccessByBox)
             .def("copy",[](const Sudoku & self){return Sudoku(self);})
             .def("Load",&Sudoku::Load)
+            .def("GetUncertainty",&Sudoku::GetUncertainty)
             ;
 
     py::class_<Solver>(m, "Solver")
@@ -38,6 +39,7 @@ PYBIND11_MODULE(sudoku_core,m){
             .def("__str__",&Solver::ToString)
             .def("Execute", &Solver::Execute)
             .def("GetSudoku",&Solver::GetSudoku)
+            .def("GetIter",&Solver::GetIter)
             ;
 
     py::class_<SinglesSolver,Solver>(m, "SinglesSolver")

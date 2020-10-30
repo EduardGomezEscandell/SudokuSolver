@@ -60,5 +60,10 @@ std::string Solver::GetDescription() const
     return "Base class for solvers";
 }
 
+int Solver::GetIter()
+{
+    return mIters;
+}
+
 
 } // namespace SudokuSolve

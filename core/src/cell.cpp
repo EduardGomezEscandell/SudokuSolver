@@ -55,27 +55,25 @@ std::string Cell::GetFormatedCoords() const
 }
 
 
-int Cell::PopCandidates(std::set<int> & rContainer)
+void Cell::PopCandidates(std::set<int> & rContainer)
 {
     std::size_t len = mCandidates.size();
     for(int value : rContainer) mCandidates.remove(value);
-    if(mCandidates.size() == 0)
-    {
-        throw NoCandidatesError(*this);
-    }
-    return len - mCandidates.size();
+    if(mpOwner != nullptr)  mpOwner->mAbsUncertainty -= len - mCandidates.size();
+
+    if(mCandidates.size() == 1) Solve(mCandidates.front());
+    if(mCandidates.size() == 0) throw NoCandidatesError(*this);
 }
 
 
-bool Cell::PopCandidate(const int toRemove)
+void Cell::PopCandidate(const int toRemove)
 {
     std::size_t len = mCandidates.size();
     mCandidates.remove(toRemove);
-    if(mCandidates.size() == 0)
-    {
-        throw NoCandidatesError(*this);
-    }
-    return len!=mCandidates.size();
+    if(mpOwner != nullptr)  mpOwner->mAbsUncertainty -= len!=mCandidates.size();
+
+    if(mCandidates.size() == 1) Solve(mCandidates.front());
+    if(mCandidates.size() == 0) throw NoCandidatesError(*this);
 }
 
 Candidates Cell::GetCandidates() const
@@ -87,14 +85,14 @@ Candidates Cell::GetCandidates() const
 void Cell::Solve(const int value)
 {
     if(!ValueWithin(value,1,9)) py::value_error("A Sudoku entry must be between 1 and 9");
+
+    if(mpOwner != nullptr)  mpOwner->mAbsUncertainty -= mCandidates.size() - 1;
+
+
     mSolved = true;
     mValue = value;
     mCandidates.clear();
     mCandidates = {value};
-    if(mpOwner != nullptr)
-    {
-        mpOwner->mAbsUncertainty--;
-    }
 }
 
 int Cell::GetValue() const

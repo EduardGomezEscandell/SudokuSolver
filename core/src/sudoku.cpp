@@ -149,7 +149,7 @@ void Sudoku::assertNoDuplicates() const
 
 double Sudoku::GetUncertainty()  const
 {
-    return mAbsUncertainty / mMmaximumCandidates;
+    return mAbsUncertainty / (double) mMmaximumCandidates;
 }
 
 Cell & Sudoku::AccessByBox(const int boxId, const int entry)

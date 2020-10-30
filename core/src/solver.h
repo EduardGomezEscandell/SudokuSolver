@@ -20,6 +20,7 @@ public:
     void Execute();
     std::string ToString();
     Sudoku & GetSudoku();
+    int GetIter();
 protected:
     int mMaxIter = 400;
     Debug mDebugLvl = Debug::full;

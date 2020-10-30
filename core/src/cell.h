@@ -38,8 +38,8 @@ public:
     void GiveOwner(const int i, const int j, Sudoku & rOwner);
     void RemoveOwner();
     void Solve(const int value);
-    bool PopCandidate(const int toRemove);
-    int PopCandidates(std::set<int> & rContainer);
+    void PopCandidate(const int toRemove);
+    void PopCandidates(std::set<int> & rContainer);
 
 protected:
     int mRow;

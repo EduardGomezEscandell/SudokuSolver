@@ -47,12 +47,13 @@ public:
 
     // Manipulators
     void Load(std::string filename);
+
 protected:
     friend class Cell;
 
-    const int mMmaximumCandidates = 9*9*8;
     Cell mGrid[9][9] = BLANK_GRID;
     Cell * mBoxes[9][9];
+    static const int mMmaximumCandidates = 9*9*8;
     int mAbsUncertainty = mMmaximumCandidates;
 
     void BuildBoxes();

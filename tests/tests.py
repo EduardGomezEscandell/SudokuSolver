@@ -69,16 +69,14 @@ class TestSudoku(unittest.TestCase):
         s.Load(filename)
         solver = sdk.Solver(s, miter, dlvl)
         msg = str(solver)
-        print(msg)
         self.assertIn("Base class for solvers",msg)
         self.assertIn(str(miter),msg)
         self.assertIn(str(dlvl),msg)
         
     def test_Solver_solve(self):
-        print('')
         s = sdk.Sudoku()
         dlvl = 1
-        miter = 200
+        miter = 10
         filename = GetPath('data/1')
         correct = [[0]*9 for i in range(9)]
         with open(filename + '.sdk') as f:
@@ -98,8 +96,8 @@ class TestSudoku(unittest.TestCase):
                 i+=1
         s.Load(filename)
         solver = sdk.SinglesSolver(s, miter, dlvl)
+        
         solver.Execute()
-        print(solver)
         for r in range(1,10):
             for c in range(1,10):
                 self.assertEqual(correct[r-1][c-1], solver.GetSudoku()[r,c].GetValue())

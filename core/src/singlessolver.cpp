@@ -23,20 +23,18 @@ bool SinglesSolver::IterateOnce()
         NakedSingleInRow(i);
         NakedSingleInCol(i);
         NakedSingleInBox(i);
+    }
 
+    for(int i=1; i<10; i++)
+    {
         HiddenSingleInRow(i);
         HiddenSingleInCol(i);
         HiddenSingleInBox(i);
     }
 
     double uncertainty = mpSudoku->GetUncertainty();
-    if(uncertainty == 0)
-    {
-        return true;
-    }
-
+    return uncertainty == 0;
     if(uncertainty == old_uncertainty) throw CannotProgressError(mIters);
-    return false;
 }
 
 
@@ -63,7 +61,7 @@ void SinglesSolver::NakedSingleInRow(const int row)
            (*mpSudoku)(row, col).PopCandidates(known_values);
         }
     }
-    mKnownRows[row-1] = (known_values.size() == 9);
+    //mKnownRows[row-1] = (known_values.size() == 9);
 }
 
 void SinglesSolver::NakedSingleInCol(const int col)
@@ -89,7 +87,7 @@ void SinglesSolver::NakedSingleInCol(const int col)
            (*mpSudoku)(row, col).PopCandidates(known_values);
         }
     }
-    mKnownCols[col-1] = (known_values.size() == 9);
+    //mKnownCols[col-1] = (known_values.size() == 9);
 }
 
 void SinglesSolver::NakedSingleInBox(int box)
@@ -115,7 +113,7 @@ void SinglesSolver::NakedSingleInBox(int box)
            mpSudoku->AccessByBox(box, entry).PopCandidates(known_values);
         }
     }
-    mKnownBoxes[box-1] = (known_values.size() == 9);
+    //mKnownBoxes[box-1] = (known_values.size() == 9);
 }
 
 void SinglesSolver::HiddenSingleInRow(int row)
