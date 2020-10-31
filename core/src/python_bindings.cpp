@@ -4,6 +4,8 @@
 #include "sudoku.h"
 #include "solver.h"
 #include "singlessolver.h"
+#include "recursivesolver.h"
+#include "branchingsolver.h"
 #include "exceptions.h"
 
 namespace py = pybind11;
