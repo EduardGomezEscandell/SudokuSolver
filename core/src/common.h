@@ -11,4 +11,4 @@ inline bool ValueWithin(T index, T min, T max)
 
 } // namespace SudokuSolve
 
-#endif // SUDOKU_COMMON_
+#endif // SUDOKU_COMMON_H
