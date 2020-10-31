@@ -14,10 +14,6 @@ Solver::Solver(Sudoku & rSudoku, const int max_iter, const int debug_lvl) :
 void Solver::SwitchSudoku(Sudoku & rSudoku)
 {
     mpSudoku = &rSudoku;
-    for(Solver & rS : mChildSolvers)
-    {
-        rS.SwitchSudoku(rSudoku);
-    }
 }
 
 void Solver::Execute()

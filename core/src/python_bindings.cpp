@@ -35,7 +35,6 @@ PYBIND11_MODULE(sudoku_core,m){
             ;
 
     py::class_<Solver>(m, "Solver")
-            .def(py::init<Sudoku&, const int, const int>())
             .def("__str__",&Solver::ToString)
             .def("Execute", &Solver::Execute)
             .def("GetSudoku",&Solver::GetSudoku)

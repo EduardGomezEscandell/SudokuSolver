@@ -67,9 +67,8 @@ class TestSudoku(unittest.TestCase):
         miter = 20
         filename = GetPath('data/1')
         s.Load(filename)
-        solver = sdk.Solver(s, miter, dlvl)
+        solver = sdk.SinglesSolver(s, miter, dlvl)
         msg = str(solver)
-        self.assertIn("Base class for solvers",msg)
         self.assertIn(str(miter),msg)
         self.assertIn(str(dlvl),msg)
         
