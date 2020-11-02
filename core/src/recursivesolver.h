@@ -16,15 +16,16 @@ namespace SudokuSolve {
 class RecursiveSolver : public Solver
 {
 public:
+    RecursiveSolver(Sudoku & rSudoku, const int max_iter, const int debug_lvl, const SolverConfig & rChild);
     RecursiveSolver(Sudoku & rSudoku, const int max_iter, const int debug_lvl, const std::vector<SolverConfig> & rChildren);
-    RecursiveSolver(Sudoku & rSudoku, const SolverConfig config) : RecursiveSolver(rSudoku, config.max_iter, config.debug_lvl, config.children) {};
+    RecursiveSolver(Sudoku & rSudoku, const SolverConfig config)
+        : RecursiveSolver(rSudoku, config.max_iter, config.debug_lvl, config.children) {};
     virtual ~RecursiveSolver();
     virtual bool IterateOnce() override = 0;
 protected:
     std::string GetDescription() const override;
     void SwitchSudoku(Sudoku & rSudoku) override;
-
-    std::list<Solver *> mStack = {};
+    void AddChildSolver(SolverConfig config);
 };
 
 } // namespace SudokuSolve

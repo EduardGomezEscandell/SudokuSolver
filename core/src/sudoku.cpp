@@ -163,4 +163,29 @@ Cell & Sudoku::AccessByBox(const int boxId, const int entry)
     return *(mBoxes[boxId-1][entry-1]);
 }
 
+Cell * Sudoku::CellWithFewestCandidates()
+{
+    int min_candidates = 10;
+    Cell * ret = nullptr;
+    for(int i = 0; i<9; i++)
+    {
+        for(int j = 0; j<9; j++)
+        {
+            Cell & cell = mGrid[i][j];
+            if(cell.IsSolved())
+            {
+                int ncandidates = cell.GetCandidates().size();
+                if(ncandidates == 2)
+                {
+                    return &cell;
+                } else if (ncandidates < min_candidates){
+                    ret = &cell;
+                    min_candidates = ncandidates;
+                }
+            }
+        }
+    }
+    return ret;
+}
+
 } //namespace SudokuSolve

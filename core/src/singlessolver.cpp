@@ -5,10 +5,6 @@ namespace py = pybind11;
 
 namespace SudokuSolve {
 
-SinglesSolver::SinglesSolver(Sudoku & rSudoku, const int max_iter, const int debug_lvl) : Solver(rSudoku, max_iter, debug_lvl)
-{
-}
-
 inline std::string SinglesSolver::GetDescription() const
 {
     return "A logic-based solver that removes candidates by same-house-elimination and single-available-cell-solution";

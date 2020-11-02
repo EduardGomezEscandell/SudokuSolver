@@ -17,14 +17,18 @@ Solver * ChooseSolver(Sudoku & rSudoku, const SolverConfig & config)
     throw py::key_error(msg.str());
 }
 
+RecursiveSolver::RecursiveSolver(Sudoku & rSudoku, const int max_iter, const int debug_lvl, const SolverConfig & rChild) : Solver(rSudoku, max_iter, debug_lvl)
+{
+    AddChildSolver(rChild);
+}
+
+
 RecursiveSolver::RecursiveSolver(Sudoku & rSudoku, const int max_iter, const int debug_lvl, const std::vector<SolverConfig> & rChildren)
     : Solver(rSudoku, max_iter, debug_lvl)
 {
-
     for(const SolverConfig & child_config : rChildren)
     {
-        Solver * child = ChooseSolver(*mpSudoku, child_config);
-        mChildSolvers.push_back(child);
+        AddChildSolver(child_config);
     }
 }
 
@@ -50,5 +54,13 @@ std::string RecursiveSolver::GetDescription() const
 {
     return "Base class for recursive solvers";
 }
+
+
+void RecursiveSolver::AddChildSolver(SolverConfig config)
+{
+    Solver * child = ChooseSolver(*mpSudoku, config);
+    mChildSolvers.push_back(child);
+}
+
 
 } // namespace SudokuSolve

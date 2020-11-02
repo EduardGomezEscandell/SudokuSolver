@@ -1,11 +1,16 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+
 #include "cell.h"
 #include "sudoku.h"
+
+#include "SolverConfig.h"
 #include "solver.h"
-#include "singlessolver.h"
 #include "recursivesolver.h"
+
+#include "singlessolver.h"
 #include "branchingsolver.h"
+
 #include "exceptions.h"
 
 namespace py = pybind11;
@@ -36,16 +41,37 @@ PYBIND11_MODULE(sudoku_core,m){
             .def("GetUncertainty",&Sudoku::GetUncertainty)
             ;
 
-    py::class_<Solver>(m, "Solver")
-            .def("__str__",&Solver::ToString)
-            .def("Execute", &Solver::Execute)
-            .def("GetSudoku",&Solver::GetSudoku)
-            .def("GetIter",&Solver::GetIter)
+
+    py::class_<SolverConfig>(m,"SolverConfig")
+            .def(py::init<SolverConfig>())
+            .def(py::init<int, int>())
+            .def(py::init<int,int,SolverConfig>())
+            .def(py::init<int,int,std::vector<SolverConfig>>())
             ;
 
+    // Base solvers
+
+    py::class_<Solver>(m, "Solver")
+            .def("__str__",  &Solver::ToString)
+            .def("Execute",  &Solver::Execute)
+            .def("GetSudoku",&Solver::GetSudoku)
+            .def("GetIter",  &Solver::GetIter)
+            ;
+
+    py::class_<RecursiveSolver, Solver>(m,"RecursiveSolver")
+            ;
+
+    // Functional solvers
+
     py::class_<SinglesSolver,Solver>(m, "SinglesSolver")
+            .def(py::init<Sudoku&, SolverConfig>())
             .def(py::init<Sudoku&, const int, const int>())
             .def("IterateOnce", &SinglesSolver::IterateOnce)
+            ;
+
+    py::class_<BranchingSolver, RecursiveSolver, Solver>(m,"BranchingSolver")
+            .def(py::init<Sudoku&, SolverConfig>())
+            .def(py::init<Sudoku&, int, int, std::vector<SolverConfig>>())
             ;
 
 }

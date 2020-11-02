@@ -2,7 +2,7 @@
 #define SOLVER_H
 
 #include "sudoku.h"
-
+#include "SolverConfig.h"
 #include <sstream>
 
 #define PRINT(debuglvl,msg) if(debuglvl<mDebugLvl) std::cout<<msg
@@ -11,15 +11,6 @@ namespace py = pybind11;
 namespace SudokuSolve{
 
 enum class Debug{none, results, info, full};
-
-struct SolverConfig
-{
-    std::string name = "Solver";
-    int max_iter = 400;
-    int debug_lvl = 0;
-    std::vector<SolverConfig> children;
-};
-
 
 class Solver
 {
@@ -31,6 +22,7 @@ public:
     // For subclasses
     virtual ~Solver(){}
     virtual void SwitchSudoku(Sudoku & rSudoku);
+    virtual bool IterateOnce() = 0;
 
     // For pyhton interface
     std::string ToString();
@@ -49,7 +41,6 @@ protected:
 
     // For subclasses
     virtual std::string GetDescription() const;
-    virtual bool IterateOnce() = 0;
 
 private:
 };

@@ -72,7 +72,7 @@ class TestSudoku(unittest.TestCase):
         self.assertIn(str(miter),msg)
         self.assertIn(str(dlvl),msg)
         
-    def test_Solver_solve(self):
+    def test_SinglesSolver(self):
         s = sdk.Sudoku()
         dlvl = 1
         miter = 10

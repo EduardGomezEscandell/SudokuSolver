@@ -44,6 +44,7 @@ public:
     Cell& operator[](std::tuple<int,int>);
     double GetUncertainty() const;
     Cell & AccessByBox(const int boxId, const int entry);
+    Cell * CellWithFewestCandidates();
 
     // Manipulators
     void Load(std::string filename);

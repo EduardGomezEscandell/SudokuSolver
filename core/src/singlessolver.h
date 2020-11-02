@@ -14,7 +14,7 @@ namespace SudokuSolve {
 class SinglesSolver : public Solver
 {
 public:
-    SinglesSolver(Sudoku & rSudoku, const int max_iter, const int debug_lvl);
+    SinglesSolver(Sudoku & rSudoku, const int max_iter, const int debug_lvl) : Solver(rSudoku, max_iter, debug_lvl){};
     SinglesSolver(Sudoku & rSudoku, const SolverConfig config) : SinglesSolver(rSudoku, config.max_iter, config.debug_lvl) {};
     std::string GetDescription() const override;
     bool IterateOnce() override;
