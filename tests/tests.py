@@ -1,14 +1,7 @@
 #!/usr/bin/python
 import unittest
-import os
 import sudoku_core as sdk
-
-
-def GetPath(filename):
-    thisfile = os.path.abspath(__file__)
-    dirpath = '/'.join(thisfile.split('/')[:-1])
-    return dirpath + '/' + filename
-
+from support import GetPath, LoadSolution, LoadSudoku
 
 class TestSudoku(unittest.TestCase):
     def test_cell(self):
@@ -31,33 +24,20 @@ class TestSudoku(unittest.TestCase):
     def test_sudoku_load(self):
         s0 = sdk.Sudoku()
         filename = GetPath('data/1')
+        correct = LoadSudoku(filename)
+        # Loading
         s0.Load(filename)
-        values=[[0]*9 for i in range(9)]
-        s=s0.copy() # Testing copy
-        with open(filename + '.sdk', "r") as f:
-            i = 0
-            for line in f:
-                if "Begin Sudoku" in line:
-                    break
-            for line in f:
-                if "End Sudoku" in line:
-                    break
-                j = 0
-                for c in line:
-                    if c=='\n':
-                        break
-                    values[i][j] = int(c)
-                    j += 1
-                i += 1
+        # Testing copying
+        s=s0.copy()
         
         for r in range(1,10):
             for c in range(1,10):
                 cell = s[r,c]
                 try:
                     if cell.IsSolved():
-                        self.assertEqual(values[r-1][c-1], cell.GetValue())
+                        self.assertEqual(correct[r-1][c-1], cell.GetValue())
                     else:
-                        self.assertEqual(values[r-1][c-1], 0)
+                        self.assertEqual(correct[r-1][c-1], 0)
                 except:
                     raise AssertionError("Failure at r%dc%d"%cell.GetCoords())
 
@@ -77,22 +57,7 @@ class TestSudoku(unittest.TestCase):
         dlvl = 1
         miter = 10
         filename = GetPath('data/1')
-        correct = [[0]*9 for i in range(9)]
-        with open(filename + '.sdk') as f:
-            for line in f:
-                if "Begin Solution" in line:
-                    break
-            i = 0
-            for line in f:
-                if "End Solution" in line:
-                    break
-                j = 0
-                for c in line:
-                    if c=='\n':
-                        break                
-                    correct[i][j] = int(c)
-                    j+=1
-                i+=1
+        correct = LoadSolution(filename)
         s.Load(filename)
         solver = sdk.SinglesSolver(s, miter, dlvl)
         
@@ -100,26 +65,26 @@ class TestSudoku(unittest.TestCase):
         for r in range(1,10):
             for c in range(1,10):
                 self.assertEqual(correct[r-1][c-1], solver.GetSudoku()[r,c].GetValue())
+    
+    def test_BranchingSolver(self):
+        s = sdk.Sudoku()
+        dlvl = 1
+        miter = 10
+        filename = 'data/3'
+        correct = LoadSolution(filename)
+        s.Load(filename)
+        config = sdk.SolverConfig("SinglesSolver",0,5)
+        solver = sdk.BranchingSolver(s, miter, dlvl, config)
+        solver.Execute()
+        for r in range(1,10):
+            for c in range(1,10):
+                self.assertEqual(correct[r-1][c-1], solver.GetSudoku()[r,c].GetValue())
+    
+# Execution
 
 if __name__ == '__main__':
     unittest.main()
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     
     
     

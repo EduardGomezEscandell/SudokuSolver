@@ -43,10 +43,12 @@ PYBIND11_MODULE(sudoku_core,m){
 
 
     py::class_<SolverConfig>(m,"SolverConfig")
-            .def(py::init<SolverConfig>())
             .def(py::init<int, int>())
-            .def(py::init<int,int,SolverConfig>())
-            .def(py::init<int,int,std::vector<SolverConfig>>())
+            .def(py::init<std::string &,int, int>())
+            .def(py::init<int, int, std::vector<SolverConfig>>())
+            .def(py::init<std::string &, int, int, std::vector<SolverConfig>>())
+            .def(py::init<int, int, SolverConfig>())
+            .def(py::init<std::string, int, int, SolverConfig>())
             ;
 
     // Base solvers
@@ -71,6 +73,7 @@ PYBIND11_MODULE(sudoku_core,m){
 
     py::class_<BranchingSolver, RecursiveSolver, Solver>(m,"BranchingSolver")
             .def(py::init<Sudoku&, SolverConfig>())
+            .def(py::init<Sudoku&, int, int, SolverConfig>())
             .def(py::init<Sudoku&, int, int, std::vector<SolverConfig>>())
             ;
 

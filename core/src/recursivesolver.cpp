@@ -8,6 +8,11 @@ namespace SudokuSolve {
 
 Solver * ChooseSolver(Sudoku & rSudoku, const SolverConfig & config)
 {
+    if(config.name.size() == 0)
+    {
+        throw py::value_error("Child solvers require their name to be inputed in the SolverConfig object");
+    }
+
     // This list should contain all non-virtual solvers
     IF_SOLVER_RETURN_NEW("SinglesSolver",   SinglesSolver);
     IF_SOLVER_RETURN_NEW("BranchingSolver", BranchingSolver);
