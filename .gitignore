@@ -11,7 +11,7 @@
 !data/3.sdk
 
 # Builds
-/core/build/**
+build/**
 
 # CMake
 **/CMakeCache.txt
