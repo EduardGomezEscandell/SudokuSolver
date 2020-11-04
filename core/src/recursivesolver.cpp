@@ -6,7 +6,7 @@
 
 namespace SudokuSolve {
 
-Solver * ChooseSolver(Sudoku & rSudoku, const SolverConfig & config)
+Solver * ChooseSolver(std::shared_ptr<Sudoku> pSudoku, const SolverConfig & config)
 {
     if(config.name.size() == 0)
     {
@@ -27,6 +27,11 @@ RecursiveSolver::RecursiveSolver(Sudoku & rSudoku, const int max_iter, const int
     AddChildSolver(rChild);
 }
 
+RecursiveSolver::RecursiveSolver(std::shared_ptr<Sudoku> & pSudoku, const int max_iter, const int debug_lvl, const SolverConfig & rChild) : Solver(pSudoku, max_iter, debug_lvl)
+{
+    AddChildSolver(rChild);
+}
+
 
 RecursiveSolver::RecursiveSolver(Sudoku & rSudoku, const int max_iter, const int debug_lvl, const std::vector<SolverConfig> & rChildren)
     : Solver(rSudoku, max_iter, debug_lvl)
@@ -37,6 +42,16 @@ RecursiveSolver::RecursiveSolver(Sudoku & rSudoku, const int max_iter, const int
     }
 }
 
+RecursiveSolver::RecursiveSolver(std::shared_ptr<Sudoku> & pSudoku, const int max_iter, const int debug_lvl, const std::vector<SolverConfig> & rChildren)
+    : Solver(pSudoku, max_iter, debug_lvl)
+{
+    for(const SolverConfig & child_config : rChildren)
+    {
+        AddChildSolver(child_config);
+    }
+}
+
+
 RecursiveSolver::~RecursiveSolver()
 {
     for(Solver* rS : mChildSolvers)
@@ -45,12 +60,25 @@ RecursiveSolver::~RecursiveSolver()
     }
 }
 
-void RecursiveSolver::SwitchSudoku(Sudoku & rSudoku)
+std::string RecursiveSolver::ToString() const
 {
-    mpSudoku = &rSudoku;
+    std::stringstream ss;
+    ss << Solver::ToString() << "\nChild solvers:\n";
+    for(Solver * solver : mChildSolvers)
+    {
+        ss << "--------------------------\n";
+        ss << solver->ToString();
+    }
+    ss << "--------------------------\n";
+    return ss.str();
+}
+
+void RecursiveSolver::SwitchSudoku(std::shared_ptr<Sudoku> & pSudoku)
+{
+    mpSudoku = pSudoku;
     for(Solver* rS : mChildSolvers)
     {
-        rS->SwitchSudoku(rSudoku);
+        rS->SwitchSudoku(pSudoku);
     }
 }
 
@@ -63,7 +91,7 @@ std::string RecursiveSolver::GetDescription() const
 
 void RecursiveSolver::AddChildSolver(SolverConfig config)
 {
-    Solver * child = ChooseSolver(*mpSudoku, config);
+    Solver * child = ChooseSolver(mpSudoku, config);
     mChildSolvers.push_back(child);
 }
 

@@ -51,9 +51,7 @@ void Solver::Finalize()
 
 Sudoku & Solver::GetSudoku()
 {
-    Sudoku & returnvalue = *mpSudoku;
-    py::print(returnvalue);
-    return returnvalue;
+    return *mpSudoku;
 }
 
 std::string Solver::ToString() const

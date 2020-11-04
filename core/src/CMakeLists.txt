@@ -13,6 +13,6 @@ pybind11_add_module(sudoku_core SHARED
                     sudoku.cpp
                     solver.cpp
                     singlessolver.cpp
-#                    recursivesolver.cpp
-#                    branchingsolver.cpp
+                    recursivesolver.cpp
+                    branchingsolver.cpp
                     )

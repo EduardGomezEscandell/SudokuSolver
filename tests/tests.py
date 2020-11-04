@@ -43,7 +43,7 @@ class TestSudoku(unittest.TestCase):
 
     def test_Solver_init(self):
         s = sdk.Sudoku()
-        dlvl = 4
+        dlvl = 0
         miter = 20
         filename = GetPath('data/1')
         s.Load(filename)
@@ -54,8 +54,8 @@ class TestSudoku(unittest.TestCase):
         
     def test_SinglesSolver(self):
         s = sdk.Sudoku()
-        dlvl = 1
-        miter = 10
+        dlvl = 0
+        miter = 3
         filename = GetPath('data/1')
         correct = LoadSolution(filename)
         s.Load(filename)
@@ -67,18 +67,22 @@ class TestSudoku(unittest.TestCase):
                 self.assertEqual(correct[r-1][c-1], s[r,c].GetValue())
     
     def test_BranchingSolver(self):
-        s = sdk.Sudoku()
-        dlvl = 1
-        miter = 10
         filename = GetPath('data/3')
-        correct = LoadSolution(filename)
+        dlvl = 0
+        miter = 12
+        config = sdk.SolverConfig("SinglesSolver",10,0)
+
+        s = sdk.Sudoku()
         s.Load(filename)
-        config = sdk.SolverConfig("SinglesSolver",0,5)
+        correct = LoadSolution(filename)
+
         solver = sdk.BranchingSolver(s, miter, dlvl, config)
         solver.Execute()
+        
+        s = solver.GetSudoku()
         for r in range(1,10):
             for c in range(1,10):
-                self.assertEqual(correct[r-1][c-1], solver.GetSudoku()[r,c].GetValue())
+                self.assertEqual(correct[r-1][c-1], s[r,c].GetValue())
     
 # Execution
 

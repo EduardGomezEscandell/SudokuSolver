@@ -19,23 +19,18 @@ bool BranchingSolver::IterateOnce()
             }
             PrintStatus(Status::progressed);
         }
-    } catch (CellLevelError e) {
+    } catch (CannotProgressError & e){
+        // Stuck. Pushing copy to stack and guessing candidate.
+        Cell & guessed_cell = TakeBranch();
+        PrintStatus(Status::pushed, &guessed_cell);
+    } catch (CellLevelError & e) {
         // Reached impossibility. Popping stack.
         RevertBranch();
         PrintStatus(Status::popped, &e.mCell);
         return false;
-    } catch (CannotProgressError e){
-        // Stuck. Pushing copy to stack and guessing candidate.
-        Cell & guessed_cell = TakeBranch();
-        PrintStatus(Status::pushed, &guessed_cell);
     }
 
     return false;
-}
-
-std::string BranchingSolver::GetDescription() const
-{
-    return "A recursive solver that uses branhing";
 }
 
 void BranchingSolver::RevertBranch()
@@ -44,7 +39,7 @@ void BranchingSolver::RevertBranch()
     {
         throw SolveError("Attempted to pop an empty stack.");
     }
-    SwitchSudoku(*mStack.back());
+    SwitchSudoku(mStack.back());
     mStack.pop_back();
 }
 
@@ -60,11 +55,11 @@ Cell & BranchingSolver::TakeBranch()
     int guess = cell->GetCandidates().front();
 
     // Pushing copy of the grid to stack and removing guess from candidates
-    mStack.emplace_back(std::make_shared<Sudoku>(*mpSudoku));
-    (*mStack.back())[coords].PopCandidate(guess);
+    mStack.push_back(std::make_shared<Sudoku>(*mpSudoku));
+    (*mStack.back().get())[coords].PopCandidate(guess);
 
     // Solving active copy of the grid
-    (*mpSudoku)[coords].Solve(guess);
+    (*mpSudoku.get())[coords].Solve(guess);
 
     // Returning cell in which guess was taken
     return *cell;
@@ -78,7 +73,6 @@ void BranchingSolver::PrintStatus(const Status status)
 void BranchingSolver::PrintStatus(const Status status, const Cell * cell)
 {
     std::stringstream msg;
-    std::string stackstr("|", mStack.size());
 
     std::string coords = "UNKNOWN";
     int value = -1;
@@ -93,19 +87,21 @@ void BranchingSolver::PrintStatus(const Status status, const Cell * cell)
             msg << "Solved on step "<<mIters;
             break;
         case Status::progressed:
-            msg << stackstr << " - Step "<<mIters<<": Reduced uncertainty down to " << mpSudoku->GetUncertainty();
+            msg << std::string("|", mStack.size()) << " - Step "<<mIters+1<<": Reduced uncertainty down to " << mpSudoku->GetUncertainty();
             break;
         case Status::pushed:
-            msg << stackstr << "> - Step "<<mIters<<": Guessed that " <<  coords << " is " << value;
+            msg << std::string("|", mStack.size()-1) << "> - Step "<<mIters+1<<": Guessed that " <<  coords << " is " << value;
             break;
         case Status::popped:
-            msg << stackstr << "< - Step "<<mIters<<": Reached an impossibility at " << coords;
+            msg << std::string("|", mStack.size()) << "< - Step "<<mIters+1<<": Reached an impossibility at " << coords;
             break;
     }
-
-    msg << std::endl;
     PRINT(Debug::info, msg.str());
 }
 
+std::string BranchingSolver::GetDescription() const
+{
+    return "BranchingSolver: A recursive solver that uses branching";
+}
 
 } //namespace SudokuSolve
