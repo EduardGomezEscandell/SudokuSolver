@@ -51,7 +51,7 @@ PYBIND11_MODULE(sudoku_core,m){
             .def(py::init<std::string, int, int, SolverConfig>())
             ;
 
-    // Base solvers
+//    // Base solvers
 
     py::class_<Solver>(m, "Solver")
             .def("__str__",  &Solver::ToString)
@@ -60,8 +60,8 @@ PYBIND11_MODULE(sudoku_core,m){
             .def("GetIter",  &Solver::GetIter)
             ;
 
-    py::class_<RecursiveSolver, Solver>(m,"RecursiveSolver")
-            ;
+//    py::class_<RecursiveSolver, Solver>(m,"RecursiveSolver")
+//            ;
 
     // Functional solvers
 
@@ -71,11 +71,11 @@ PYBIND11_MODULE(sudoku_core,m){
             .def("IterateOnce", &SinglesSolver::IterateOnce)
             ;
 
-    py::class_<BranchingSolver, RecursiveSolver, Solver>(m,"BranchingSolver")
-            .def(py::init<Sudoku&, SolverConfig>())
-            .def(py::init<Sudoku&, int, int, SolverConfig>())
-            .def(py::init<Sudoku&, int, int, std::vector<SolverConfig>>())
-            ;
+//    py::class_<BranchingSolver, RecursiveSolver, Solver>(m,"BranchingSolver")
+//            .def(py::init<Sudoku&, SolverConfig>())
+//            .def(py::init<Sudoku&, int, int, SolverConfig>())
+//            .def(py::init<Sudoku&, int, int, std::vector<SolverConfig>>())
+//            ;
 
 }
 } //namespace SudokuSolve

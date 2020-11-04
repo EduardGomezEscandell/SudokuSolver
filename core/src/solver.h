@@ -5,7 +5,7 @@
 #include "SolverConfig.h"
 #include <sstream>
 
-#define PRINT(debuglvl,msg) if(debuglvl<mDebugLvl) std::cout<<msg
+#define PRINT(debuglvl,msg) if(debuglvl<=mDebugLvl) py::print(msg)
 namespace py = pybind11;
 
 namespace SudokuSolve{
@@ -16,16 +16,22 @@ class Solver
 {
 public:
     Solver(Sudoku & rSudoku, const int max_iter, const int debug_lvl);
-    Solver(Sudoku & rSudoku, const SolverConfig config) : Solver(rSudoku, config.max_iter, config.debug_lvl) {};
+    Solver(std::shared_ptr<Sudoku> & pSudoku, const int max_iter, const int debug_lvl);
+
+    Solver(Sudoku & rSudoku, const SolverConfig config)
+        : Solver(rSudoku, config.max_iter, config.debug_lvl) {};
+    Solver(std::shared_ptr<Sudoku> & pSudoku, const SolverConfig config)
+        : Solver(pSudoku, config.max_iter, config.debug_lvl) {};
+
     void Execute();
 
     // For subclasses
     virtual ~Solver(){}
-    virtual void SwitchSudoku(Sudoku & rSudoku);
+    virtual void SwitchSudoku(std::shared_ptr<Sudoku> & pSudoku);
     virtual bool IterateOnce() = 0;
 
     // For pyhton interface
-    std::string ToString();
+    virtual std::string ToString() const;
     Sudoku & GetSudoku();
     int GetIter();
 
@@ -34,7 +40,7 @@ protected:
     Debug mDebugLvl = Debug::full;
 
     int mIters;
-    Sudoku * mpSudoku;
+    std::shared_ptr<Sudoku> mpSudoku;
     std::vector<Solver *> mChildSolvers;
 
     void Finalize();

@@ -7,13 +7,20 @@ namespace SudokuSolve {
 Solver::Solver(Sudoku & rSudoku, const int max_iter, const int debug_lvl) :
     mMaxIter {max_iter},
     mDebugLvl{(Debug) debug_lvl},
-    mpSudoku {&rSudoku}
+    mpSudoku {std::make_shared<Sudoku>(rSudoku)}
 {
 }
 
-void Solver::SwitchSudoku(Sudoku & rSudoku)
+Solver::Solver(std::shared_ptr<Sudoku> & pSudoku, const int max_iter, const int debug_lvl) :
+    mMaxIter {max_iter},
+    mDebugLvl{(Debug) debug_lvl},
+    mpSudoku {pSudoku}
 {
-    mpSudoku = &rSudoku;
+}
+
+void Solver::SwitchSudoku(std::shared_ptr<Sudoku> & pSudoku)
+{
+    mpSudoku = pSudoku;
 }
 
 void Solver::Execute()
@@ -22,6 +29,7 @@ void Solver::Execute()
     for(mIters=0; mIters < mMaxIter && !finished; mIters++)
     {
         finished = IterateOnce();
+        PRINT(Debug::full, mpSudoku->ToString());
     }
 }
 
@@ -34,26 +42,30 @@ void Solver::Finalize()
 {
     if(mIters == mMaxIter-1) throw ReachedMaxIterError();
 
-    PRINT(Debug::none,"SOLUTION"<<std::endl<<mpSudoku->ToString()<<std::endl<<mIters<<" iterations employed"<<std::endl);
+    std::stringstream ss;
+    ss << "SOLUTION"<<std::endl<<mpSudoku->ToString()<<std::endl<<mIters<<" iterations employed"<<std::endl;
+    PRINT(Debug::results, ss.str());
 
     if(mpSudoku->GetUncertainty() > 0) throw SolveError("Failed to reduce all uncertainty");
 }
 
 Sudoku & Solver::GetSudoku()
 {
-    return *mpSudoku;
+    Sudoku & returnvalue = *mpSudoku;
+    py::print(returnvalue);
+    return returnvalue;
 }
 
-std::string Solver::ToString()
+std::string Solver::ToString() const
 {
     std::stringstream ss;
-    ss << GetDescription() <<"\nMax iter : "<<mMaxIter<<"\nDebug_lvl : "<<(int)mDebugLvl<<"\n"<<mpSudoku->ToString()<<"";
+    ss << GetDescription() <<"\nMax iter : "<<mMaxIter<<"\nDebug_lvl : "<<(int)mDebugLvl<<"\n";
     return ss.str();
 }
 
 std::string Solver::GetDescription() const
 {
-    return "Base class for solvers";
+    return "Solver: Base class for solvers";
 }
 
 int Solver::GetIter()

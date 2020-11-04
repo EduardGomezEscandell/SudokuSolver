@@ -27,10 +27,12 @@ Sudoku::Sudoku(const Sudoku & rRHS)
         for(int j=0; j<9; j++)
         {
             mGrid[i][j] = rRHS.mGrid[i][j];
+            mGrid[i][j].GiveOwner(i+1,j+1, *this);
         }
     }
     // Building boxes
     BuildBoxes();
+    mAbsUncertainty = rRHS.mAbsUncertainty;
 }
 
 void Sudoku::BuildBoxes()
@@ -97,7 +99,7 @@ std::string Sudoku::ToString() const
     {
         for(int j=0; j<9; j++)
         {
-            ss << mGrid[i][j].ToString();
+            ss << mGrid[i][j].ToString() << " ";
             if(j%3 == 2) ss << ' ';
         }
         ss<<std::endl;
@@ -172,7 +174,7 @@ Cell * Sudoku::CellWithFewestCandidates()
         for(int j = 0; j<9; j++)
         {
             Cell & cell = mGrid[i][j];
-            if(cell.IsSolved())
+            if(!cell.IsSolved())
             {
                 int ncandidates = cell.GetCandidates().size();
                 if(ncandidates == 2)

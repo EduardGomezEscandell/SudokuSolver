@@ -7,7 +7,7 @@ namespace SudokuSolve {
 
 inline std::string SinglesSolver::GetDescription() const
 {
-    return "A logic-based solver that removes candidates by same-house-elimination and single-available-cell-solution";
+    return "SinglesSolver: A logic-based solver that removes candidates by same-house-elimination and single-available-cell-solution";
 }
 
 bool SinglesSolver::IterateOnce()
@@ -28,9 +28,23 @@ bool SinglesSolver::IterateOnce()
         HiddenSingleInBox(i);
     }
 
+
     double uncertainty = mpSudoku->GetUncertainty();
-    return uncertainty == 0;
-    if(uncertainty == old_uncertainty) throw CannotProgressError(mIters);
+
+    if(uncertainty == old_uncertainty)
+    {
+        throw CannotProgressError(mIters);
+    }
+
+    if(uncertainty==0)
+    {
+        PRINT(Debug::info, "Solved!");
+        return true;
+    }
+    std::stringstream ss;
+    ss << "Step "<<mIters<<": Reduced uncertainty down to " << mpSudoku->GetUncertainty();
+    PRINT(Debug::info, ss.str());
+    return false;
 }
 
 
@@ -57,7 +71,6 @@ void SinglesSolver::NakedSingleInRow(const int row)
            (*mpSudoku)(row, col).PopCandidates(known_values);
         }
     }
-    //mKnownRows[row-1] = (known_values.size() == 9);
 }
 
 void SinglesSolver::NakedSingleInCol(const int col)
@@ -109,7 +122,6 @@ void SinglesSolver::NakedSingleInBox(int box)
            mpSudoku->AccessByBox(box, entry).PopCandidates(known_values);
         }
     }
-    //mKnownBoxes[box-1] = (known_values.size() == 9);
 }
 
 void SinglesSolver::HiddenSingleInRow(int row)

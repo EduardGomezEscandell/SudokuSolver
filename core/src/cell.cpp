@@ -100,7 +100,9 @@ int Cell::GetValue() const
     if(mSolved){
         return mValue;
     } else {
-        throw "This cell is not solved";
+        std::stringstream ss;
+        ss << "This cell is not solved [" << GetFormatedCoords() << "]";
+        throw py::value_error(ss.str());
     }
 }
 
