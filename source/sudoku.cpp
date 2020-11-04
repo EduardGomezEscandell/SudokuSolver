@@ -55,8 +55,15 @@ void Sudoku::Load(std::string filename)
 {
     filename += ".sdk";
 
-
     std::ifstream f(filename);
+
+    if(!f.good())
+    {
+        py::print("KO");
+        std::stringstream ss;
+        ss << "File " << filename << " could not be opened. Does it exist?";
+        throw py::value_error(ss.str());
+    }
 
     std::string line;
     // Skipping to begining of sudoku

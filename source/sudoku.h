@@ -11,6 +11,8 @@
 #include <string>
 #include <sstream>
 
+namespace py = pybind11;
+
 namespace SudokuSolve{
 
 // Machine-generated code
