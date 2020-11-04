@@ -51,7 +51,7 @@ PYBIND11_MODULE(sudoku_core,m){
             .def(py::init<std::string, int, int, SolverConfig>())
             ;
 
-//    // Base solvers
+    // Base solvers
 
     py::class_<Solver>(m, "Solver")
             .def("__str__",  &Solver::ToString)
