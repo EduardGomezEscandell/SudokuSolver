@@ -1,17 +1,8 @@
 # Python cache
 **.pyc
 
-# Sudoku source files
-*.sdk
-
-# Easy example source file
-!data/1.sdk
-
-# Harder example source file
-!data/3.sdk
-
 # Builds
-/core/build/**
+build/**
 
 # CMake
 **/CMakeCache.txt

@@ -1,3 +1,6 @@
-[submodule "core/src/pybind11"]
-	path = core/src/pybind11
-	url = ../../pybind/pybind11
+[submodule "core/pybind11"]
+	path = core/pybind11
+	url = ../pybind/pybind11
+[submodule "source/pybind11"]
+	path = source/pybind11
+	url = https://github.com/pybind/pybind11.git

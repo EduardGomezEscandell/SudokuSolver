@@ -23,7 +23,7 @@ class TestSudoku(unittest.TestCase):
 
     def test_sudoku_load(self):
         s0 = sdk.Sudoku()
-        filename = GetPath('data/1')
+        filename = GetPath('../sudokus/1')
         correct = LoadSudoku(filename)
         # Loading
         s0.Load(filename)
@@ -45,7 +45,7 @@ class TestSudoku(unittest.TestCase):
         s = sdk.Sudoku()
         dlvl = 0
         miter = 20
-        filename = GetPath('data/1')
+        filename = GetPath('../sudokus/1')
         s.Load(filename)
         solver = sdk.SinglesSolver(s, miter, dlvl)
         msg = str(solver)
@@ -56,7 +56,7 @@ class TestSudoku(unittest.TestCase):
         s = sdk.Sudoku()
         dlvl = 0
         miter = 3
-        filename = GetPath('data/1')
+        filename = GetPath('../sudokus/1')
         correct = LoadSolution(filename)
         s.Load(filename)
         solver = sdk.SinglesSolver(s, miter, dlvl)
@@ -67,7 +67,7 @@ class TestSudoku(unittest.TestCase):
                 self.assertEqual(correct[r-1][c-1], s[r,c].GetValue())
     
     def test_BranchingSolver(self):
-        filename = GetPath('data/3')
+        filename = GetPath('../sudokus/3')
         dlvl = 0
         miter = 12
         config = sdk.SolverConfig("SinglesSolver",10,0)
@@ -88,22 +88,3 @@ class TestSudoku(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    

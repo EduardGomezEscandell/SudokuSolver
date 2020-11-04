@@ -36,7 +36,7 @@ public:
     bool IterateOnce() override;
 
 protected:
-    std::list<std::shared_ptr<Sudoku>> mStack = {};
+    std::vector<std::shared_ptr<Sudoku>> mStack = {};
 
     std::string GetDescription() const override;
 

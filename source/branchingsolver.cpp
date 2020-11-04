@@ -82,18 +82,22 @@ void BranchingSolver::PrintStatus(const Status status, const Cell * cell)
         value = cell->GetValue();
     }
 
+    int stacksize = mStack.size();
+    std::string stack(stacksize, '|');
+    std::string stack1((stacksize > 0) ? stacksize-1 : stacksize, '|');
+
     switch (status) {
         case Status::solved:
             msg << "Solved on step "<<mIters;
             break;
         case Status::progressed:
-            msg << std::string("|", mStack.size()) << " - Step "<<mIters+1<<": Reduced uncertainty down to " << mpSudoku->GetUncertainty();
+            msg << stack  << " - Step "<<mIters+1<<": Reduced uncertainty down to " << mpSudoku->GetUncertainty();
             break;
         case Status::pushed:
-            msg << std::string("|", mStack.size()-1) << "> - Step "<<mIters+1<<": Guessed that " <<  coords << " is " << value;
+            msg<< stack1  << "> - Step "<<mIters+1<<": Guessed that " <<  coords << " is " << value;
             break;
         case Status::popped:
-            msg << std::string("|", mStack.size()) << "< - Step "<<mIters+1<<": Reached an impossibility at " << coords;
+            msg<< stack << "< - Step "<<mIters+1<<": Reached an impossibility at " << coords;
             break;
     }
     PRINT(Debug::info, msg.str());
