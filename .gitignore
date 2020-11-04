@@ -9,3 +9,16 @@
 
 # Harder example source file
 !data/3.sdk
+
+# Builds
+/core/build/**
+
+# CMake
+**/CMakeCache.txt
+**/CMakeFiles/**
+**/Makefile
+**.user
+*.cmake
+
+# Comiled libraries
+**.cbp
