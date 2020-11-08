@@ -73,7 +73,7 @@ void Cell::PopCandidate(const int toRemove)
     if(mpOwner != nullptr)  mpOwner->mAbsUncertainty -= len!=mCandidates.size();
 
     if(mCandidates.size() == 1) Solve(mCandidates.front());
-    if(mCandidates.empty() == 0) throw NoCandidatesError(*this);
+    if(mCandidates.empty()) throw NoCandidatesError(*this);
 }
 
 Candidates Cell::GetCandidates() const
