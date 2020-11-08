@@ -28,6 +28,7 @@ PYBIND11_MODULE(sudoku,m){
             .def("GetFormatedCoords",&Cell::GetFormatedCoords)
             .def("GetCandidates",&Cell::GetCandidates)
             .def("PopCandidate",&Cell::PopCandidate)
+            .def("PopCandidates",&Cell::PopCandidates)
             .def("Solve",&Cell::Solve)
             ;
 
