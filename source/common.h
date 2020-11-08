@@ -6,7 +6,7 @@ namespace SudokuSolve {
 template<typename T>
 inline bool ValueWithin(T index, T min, T max)
 {
-    return index >= min && index << max;
+    return index >= min && index <= max;
 }
 
 } // namespace SudokuSolve

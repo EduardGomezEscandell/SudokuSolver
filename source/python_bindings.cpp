@@ -8,6 +8,8 @@
 #include "solver.h"
 #include "recursivesolver.h"
 
+#include "hiddensinglessolver.h"
+#include "nakedsinglessolver.h"
 #include "singlessolver.h"
 #include "branchingsolver.h"
 
@@ -65,8 +67,19 @@ PYBIND11_MODULE(sudoku,m){
             ;
 
     // Functional solvers
+    py::class_<HiddenSinglesSolver,Solver>(m, "HiddenSinglesSolver")
+            .def(py::init<Sudoku&, SolverConfig>())
+            .def(py::init<Sudoku&, const int, const int>())
+            .def("IterateOnce", &HiddenSinglesSolver::IterateOnce)
+            ;
 
-    py::class_<SinglesSolver,Solver>(m, "SinglesSolver")
+    py::class_<NakedSinglesSolver,Solver>(m, "NakedSinglesSolver")
+            .def(py::init<Sudoku&, SolverConfig>())
+            .def(py::init<Sudoku&, const int, const int>())
+            .def("IterateOnce", &NakedSinglesSolver::IterateOnce)
+            ;
+
+    py::class_<SinglesSolver,RecursiveSolver, Solver>(m, "SinglesSolver")
             .def(py::init<Sudoku&, SolverConfig>())
             .def(py::init<Sudoku&, const int, const int>())
             .def("IterateOnce", &SinglesSolver::IterateOnce)
@@ -76,6 +89,7 @@ PYBIND11_MODULE(sudoku,m){
             .def(py::init<Sudoku&, SolverConfig>())
             .def(py::init<Sudoku&, int, int, SolverConfig>())
             .def(py::init<Sudoku&, int, int, std::vector<SolverConfig>>())
+            .def("IterateOnce", &BranchingSolver::IterateOnce)
             ;
 
 }

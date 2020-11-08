@@ -1,6 +1,7 @@
 #ifndef SINGLESSOLVER_H
 #define SINGLESSOLVER_H
 
+#include "recursivesolver.h"
 #include "solver.h"
 
 #include <pybind11/pybind11.h>
@@ -9,15 +10,15 @@
 
 namespace SudokuSolve {
 
-#define FALSE9 {false, false, false, false, false, false, false, false, false}
-
-class SinglesSolver : public Solver
+class SinglesSolver : public RecursiveSolver
 {
 public:
     SinglesSolver(Sudoku & rSudoku, const int max_iter, const int debug_lvl)
-        : Solver(rSudoku, max_iter, debug_lvl){};
+        : RecursiveSolver(rSudoku, max_iter, debug_lvl,  {SolverConfig("HiddenSinglesSolver", 1, 0), SolverConfig("NakedSinglesSolver", 1, 0)})
+        {};
     SinglesSolver(std::shared_ptr<Sudoku> & pSudoku, const int max_iter, const int debug_lvl)
-        : Solver(pSudoku, max_iter, debug_lvl){};
+        : RecursiveSolver(pSudoku, max_iter, debug_lvl, {SolverConfig("HiddenSinglesSolver", 1, 0), SolverConfig("NakedSinglesSolver", 1, 0)})
+        {};
 
     SinglesSolver(Sudoku & rSudoku, const SolverConfig config)
         : SinglesSolver(rSudoku, config.max_iter, config.debug_lvl) {};
@@ -27,17 +28,7 @@ public:
     std::string GetDescription() const override;
     bool IterateOnce() override;
 protected:
-    bool mKnownRows [9] = FALSE9;
-    bool mKnownCols [9] = FALSE9;
-    bool mKnownBoxes [9] = FALSE9;
-
-    void NakedSingleInRow(int row);
-    void NakedSingleInCol(int col);
-    void NakedSingleInBox(int box);
-
-    void HiddenSingleInRow(int row);
-    void HiddenSingleInCol(int col);
-    void HiddenSingleInBox(int box);
+    void LinkSolvers();
 };
 
 } // namespace SudokuSolve

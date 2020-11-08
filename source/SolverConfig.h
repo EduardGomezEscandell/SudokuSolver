@@ -26,7 +26,7 @@ struct SolverConfig
         debug_lvl(debuglvl)
         {};
 
-    SolverConfig(std::string & rName,int maxiter, int debuglvl) :
+    SolverConfig(std::string rName, int maxiter, int debuglvl) :
         SolverConfig(maxiter, debuglvl)
         {name = rName;};
 
@@ -35,7 +35,7 @@ struct SolverConfig
         children(children_config)
         {SolverConfig(maxiter, debuglvl);};
 
-    SolverConfig(std::string & rName, int maxiter, int debuglvl, std::vector<SolverConfig> children_config) :
+    SolverConfig(std::string rName, int maxiter, int debuglvl, std::vector<SolverConfig> children_config) :
         SolverConfig(maxiter, debuglvl, children_config)
         {name = rName;};
 

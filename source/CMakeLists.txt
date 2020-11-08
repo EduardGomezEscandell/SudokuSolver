@@ -12,7 +12,11 @@ pybind11_add_module(sudoku SHARED
                     cell.cpp
                     sudoku.cpp
                     solver.cpp
+                    nakedsinglessolver.cpp
+                    hiddensinglessolver.cpp
                     singlessolver.cpp
                     recursivesolver.cpp
                     branchingsolver.cpp
                     )
+
+target_compile_options(sudoku PRIVATE -Wall -Wextra -pedantic)

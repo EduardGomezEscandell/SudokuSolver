@@ -51,6 +51,11 @@ public:
     // Manipulators
     void Load(std::string filename);
 
+    // Helpers
+    bool mKnownRows [9] = {false, false, false, false, false, false, false, false, false};
+    bool mKnownCols [9] = {false, false, false, false, false, false, false, false, false};
+    bool mKnownBoxes [9]= {false, false, false, false, false, false, false, false, false};
+
 protected:
     friend class Cell;
 

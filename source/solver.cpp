@@ -26,10 +26,17 @@ void Solver::SwitchSudoku(std::shared_ptr<Sudoku> & pSudoku)
 void Solver::Execute()
 {
     bool finished = false;
+    double uncertainty = mpSudoku->GetUncertainty();
     for(mIters=0; mIters < mMaxIter && !finished; mIters++)
     {
         finished = IterateOnce();
         PRINT(Debug::full, mpSudoku->ToString());
+        double new_uncertainty = mpSudoku->GetUncertainty();
+        if(new_uncertainty == uncertainty)
+        {
+            throw CannotProgressError(mIters);
+        }
+        uncertainty = new_uncertainty;
     }
 }
 

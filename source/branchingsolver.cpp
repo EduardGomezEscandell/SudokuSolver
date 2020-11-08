@@ -6,6 +6,7 @@ namespace SudokuSolve {
 bool BranchingSolver::IterateOnce()
 {
     bool no_uncertainty = false;
+    double uncertainty = mpSudoku->GetUncertainty();
     try {
         for(Solver * child : mChildSolvers)
         {
@@ -17,19 +18,32 @@ bool BranchingSolver::IterateOnce()
                 PrintStatus(Status::solved);
                 return true;
             }
-            PrintStatus(Status::progressed);
+
+            double new_uncertainty = mpSudoku->GetUncertainty();
+
+            if(new_uncertainty == uncertainty)
+            {
+                // Stuck. Pushing copy to stack and guessing candidate.
+                Cell & guessed_cell = TakeBranch();
+                PrintStatus(Status::pushed, &guessed_cell);
+            } else {
+                PrintStatus(Status::progressed);
+            }
         }
-    } catch (CannotProgressError & e){
+    }
+    catch (CannotProgressError & e)
+    {
         // Stuck. Pushing copy to stack and guessing candidate.
         Cell & guessed_cell = TakeBranch();
         PrintStatus(Status::pushed, &guessed_cell);
-    } catch (CellLevelError & e) {
+    }
+
+    catch (CellLevelError & e) {
         // Reached impossibility. Popping stack.
         RevertBranch();
         PrintStatus(Status::popped, &e.mCell);
         return false;
     }
-
     return false;
 }
 

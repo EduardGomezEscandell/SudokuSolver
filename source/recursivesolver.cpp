@@ -2,6 +2,8 @@
 
 // Including all non-base solvers
 #include "singlessolver.h"
+#include "hiddensinglessolver.h"
+#include "nakedsinglessolver.h"
 #include "branchingsolver.h"
 
 namespace SudokuSolve {
@@ -15,6 +17,8 @@ Solver * ChooseSolver(std::shared_ptr<Sudoku> pSudoku, const SolverConfig & conf
 
     // This list should contain all non-virtual solvers
     IF_SOLVER_RETURN_NEW("SinglesSolver",   SinglesSolver);
+    IF_SOLVER_RETURN_NEW("HiddenSinglesSolver",   HiddenSinglesSolver);
+    IF_SOLVER_RETURN_NEW("NakedSinglesSolver",   NakedSinglesSolver);
     IF_SOLVER_RETURN_NEW("BranchingSolver", BranchingSolver);
 
     std::stringstream msg;
