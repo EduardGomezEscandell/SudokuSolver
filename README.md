@@ -1,6 +1,12 @@
 # Python Sudoku Solver
 
-This program solves Sudokus following logic first, and when out of options, branching (a.k.a. brute force). A few examples of use are found in the scripts directory. The heavy lifting is written in C++ and it can be accessed via Python.
+This repository aims to create a library to solve sudokus with different algorithms. A few examples of use are found in the scripts directory. The library is written in C++ and called from Python, so as to take advantage of C++'s performance and Python's ease of use.
+
+The goal of this repository is not to create the fastest algorithm but rather to be a playground for different concepts that interest me, so far this has been:
+- Creating a Python interface to a C++ program
+- Object oriented programming
+- Usage of smart pointers
+- Writing a CMake file
 
 # How ...
 
@@ -25,17 +31,9 @@ The best way is to create a class derived form the `Solver` class for a simple s
 Then you'll have to go to `source/python_bindings.cpp` and add it. Then, go to 
 `source/recursivesolver.cpp` and add your solver to the list in the `ChooseSolver` function, if you want recursive solvers to be able to use yours. To compile, add your solver file to the list in `source/CMakeLists.txt`. Finally, you can create some tests in `tests/tests.py`.
 
-## Goals
+## Potential improvements
 
-The goal of this repository is not to create the fastest algorithm but rather to be a playground for different concepts that interest me, so far this has been:
-- Creating a Python interface to a C++ program
-- Object Oriented programming
-- Usage of smart pointers
-- Writing a CMake file
-
-## Future work
-
-In the future I wish to add more functionality. Some ideas are:
+If in the future I decide to add more functionality, some features I might consider are:
 - Replacing all remaining raw pointers with smart pointers
 - Parallelism
 - Adding more complex logic algorithms
