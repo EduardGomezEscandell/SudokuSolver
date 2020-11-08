@@ -1,0 +1,11 @@
+SUDOKU_DIR=$PWD
+BUILD_DIR=$SUDOKU_DIR/build
+SOURCE_DIR=$SUDOKU_DIR/source
+
+mkdir $BUILD_DIR
+
+cd $BUILD_DIR
+cmake $SOURCE_DIR
+cmake --build .
+
+cd $SUDOKU_DIR

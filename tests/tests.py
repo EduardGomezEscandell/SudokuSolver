@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import unittest
-import sudoku_core as sdk
+import sudoku as sdk
 from support import GetPath, LoadSolution, LoadSudoku
 
 class TestSudoku(unittest.TestCase):

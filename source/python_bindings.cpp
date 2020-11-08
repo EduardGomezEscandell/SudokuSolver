@@ -16,7 +16,7 @@
 namespace py = pybind11;
 namespace SudokuSolve{
 
-PYBIND11_MODULE(sudoku_core,m){
+PYBIND11_MODULE(sudoku,m){
     py::class_<Cell>(m,"Cell")
             .def(py::init<const int, const int>())
             .def(py::init<Cell&>())
