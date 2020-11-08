@@ -81,7 +81,7 @@ protected:
     void write_message() override
     {
         std::stringstream ss;
-        ss << "Cell " << mCell.GetFormatedCoords() << " has a entry that exists elsewhere in its house";
+        ss << "Cell " << mCell.GetFormatedCoords() << " has an entry that exists elsewhere in its house";
         mMessage = ss.str();
     }
 };
