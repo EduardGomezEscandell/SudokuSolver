@@ -58,7 +58,6 @@ class TestSudoku(unittest.TestCase):
         miter = 3
         filename = GetPath('../sudokus/1')
         s.Load(filename)
-        print(s)
         solver = sdk.HiddenSinglesSolver(s, miter, dlvl)
         solver.IterateOnce()
         s = solver.GetSudoku()
