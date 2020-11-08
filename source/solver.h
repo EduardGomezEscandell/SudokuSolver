@@ -47,7 +47,6 @@ protected:
 
     // For subclasses
     virtual std::string GetDescription() const;
-private:
 };
 
 
