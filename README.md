@@ -7,7 +7,7 @@ This program solves Sudokus following logic first, and when out of options, bran
 ### How to install ###
 First, clone the repository. Go to the repository and in the console type `sh build.sh`. A compilation script is only provided for Linux. A new directory `build` will appear with, amongst other files, a `.so` file inside it. This is the library. A link will also be created in the `scripts` directory so you can test them. In order to be able to use it anywhere, you can add the build directory to your python path, or create a link to the library in you working directory.
 
-#### How to use ####
+### How to use ###
 In order to get started, the best is to go to the `scripts` directory and check out the scripts inside it. In order to see all the classes and functions, you can go to `source/python_bindings.cpp` and see them.
 
 ### How does it work? ###
@@ -19,7 +19,7 @@ In order to get started, the best is to go to the `scripts` directory and check 
 The best way is to create a class derived form the `Solver` class for a simple solver, or from `RecursiveSolver` if you want to have your solver use others. A method `IterateOnce` will have to be overridden, this is where the logic takes place. Method `GetDescription` should return a one-line description of your solver. 
 
 Then you'll have to go to `source/python_bindings.cpp` and add it. Then, go to 
-`source/recursivesolver.cpp` and add your solver to the list in the `ChooseSolver` function, if you want recursive solvers to be able to use yours. Finally, you can create some tests in `tests/tests.py`.
+`source/recursivesolver.cpp` and add your solver to the list in the `ChooseSolver` function, if you want recursive solvers to be able to use yours. To compile, add your solver file to the list in `source/CMakeLists.txt`. Finally, you can create some tests in `tests/tests.py`.
 
 ## Goals
 
