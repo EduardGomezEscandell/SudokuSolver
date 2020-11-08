@@ -7,6 +7,7 @@ namespace SudokuSolve {
 Solver::Solver(Sudoku & rSudoku, const int max_iter, const int debug_lvl) :
     mMaxIter {max_iter},
     mDebugLvl{(Debug) debug_lvl},
+    mIters{0},
     mpSudoku {std::make_shared<Sudoku>(rSudoku)}
 {
 }

@@ -77,7 +77,8 @@ void Sudoku::Load(std::string filename)
     }
     // Reading sudoku
     int i=0;
-    int j=0,val;
+    int j=0;
+    int val;
     while (getline (f, line))
     {
         j = 0;
@@ -187,7 +188,8 @@ Cell * Sudoku::CellWithFewestCandidates()
                 if(ncandidates == 2)
                 {
                     return &cell;
-                } else if (ncandidates < min_candidates){
+                }
+                if (ncandidates < min_candidates){
                     ret = &cell;
                     min_candidates = ncandidates;
                 }
