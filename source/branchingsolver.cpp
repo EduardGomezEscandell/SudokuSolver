@@ -18,17 +18,15 @@ bool BranchingSolver::IterateOnce()
                 PrintStatus(Status::solved);
                 return true;
             }
-
-            double new_uncertainty = mpSudoku->GetUncertainty();
-
-            if(new_uncertainty == uncertainty)
-            {
-                // Stuck. Pushing copy to stack and guessing candidate.
-                Cell & guessed_cell = TakeBranch();
-                PrintStatus(Status::pushed, &guessed_cell);
-            } else {
-                PrintStatus(Status::progressed);
-            }
+        }
+        double new_uncertainty = mpSudoku->GetUncertainty();
+        if(new_uncertainty == uncertainty)
+        {
+            // Stuck. Pushing copy to stack and guessing candidate.
+            Cell & guessed_cell = TakeBranch();
+            PrintStatus(Status::pushed, &guessed_cell);
+        } else {
+            PrintStatus(Status::progressed);
         }
     }
     catch (CannotProgressError & e)
@@ -49,7 +47,7 @@ bool BranchingSolver::IterateOnce()
 
 void BranchingSolver::RevertBranch()
 {
-    if(mStack.size() == 0)
+    if(mStack.empty())
     {
         throw SolveError("Attempted to pop an empty stack.");
     }
