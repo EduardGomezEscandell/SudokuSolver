@@ -6,8 +6,8 @@ namespace SudokuSolve {
 bool BranchingSolver::IterateOnce()
 {
     bool no_uncertainty = false;
-    double uncertainty = mpSudoku->GetUncertainty();
     try {
+        double uncertainty = mpSudoku->GetUncertainty();
         for(Solver * child : mChildSolvers)
         {
             no_uncertainty = child->IterateOnce();

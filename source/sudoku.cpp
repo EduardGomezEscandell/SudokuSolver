@@ -85,7 +85,7 @@ void Sudoku::Load(std::string filename)
         if(line.find("End Sudoku") != std::string::npos) break;
         for(char & c : line){
             if(c == '\n') break;
-            val = (int)c - 48;
+            val = (int)c - int('0');
             if(ValueWithin(val,1,9)){
                 mGrid[i][j].Solve(val);
                 j++;
