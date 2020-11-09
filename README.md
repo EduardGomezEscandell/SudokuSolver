@@ -3,7 +3,7 @@
 This repository aims to create a library to solve sudokus with different algorithms. A few examples of use are found in the scripts directory. The library is written in C++ and called from Python, so as to take advantage of C++'s performance and Python's ease of use.
 
 The goal of this repository is not to create the fastest algorithm but rather to be a playground for different concepts that interest me, so far this has been:
-- Creating a Python interface to a C++ program
+- Creating a Python interface for a C++ program
 - Object oriented programming
 - Usage of smart pointers
 - Writing a CMake file
